@@ -22,6 +22,14 @@ const PORT = process.env.PORT || 5000; // Gunakan port dari .env atau default 50
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
 // ===============================
+// TRUST PROXY (untuk Railway)
+// ===============================
+// Railway menggunakan reverse proxy, harus trust proxy untuk rate limiter
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1); // Trust first proxy
+}
+
+// ===============================
 // SECURITY MIDDLEWARE
 // ===============================
 
