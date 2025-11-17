@@ -5,8 +5,9 @@
   "scripts": {
     "install:backend": "cd backend && npm install",
     "install:frontend": "cd frontend && npm install",
+    "clean:frontend": "rm -rf frontend/build",
     "build:frontend": "cd frontend && npm run build",
-    "build": "npm run install:backend && npm run install:frontend && CI=false npm run build:frontend",
+    "build": "npm run install:backend && npm run install:frontend && npm run clean:frontend && CI=false npm run build:frontend",
     "start": "cd backend && node src/server.js"
   },
   "engines": {
