@@ -1,5 +1,6 @@
 // frontend/src/api/analytics.js
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Use '/api' for production (same domain), or set env var for development
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
 // Helper to add JWT token to requests
 const fetchWithAuth = async (url, options = {}) => {
