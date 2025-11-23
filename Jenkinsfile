@@ -22,8 +22,8 @@ pipeline {
                 
                 // Matikan container lama & Build ulang yang baru
                 // Kita pakai perintah shell 'sh' sungguhan
-                sh 'docker compose down'
-                sh 'docker compose up -d --build'
+                sh 'docker-compose down'
+                sh 'docker-compose up -d --build'
             }
         }
         
