@@ -22,8 +22,8 @@ pipeline {
                 
                 // Matikan container lama & Build ulang yang baru
                 // Kita pakai perintah shell 'sh' sungguhan
-                sh 'docker-compose down'
-                sh 'docker-compose up -d --build'
+                sh 'docker compose down'
+                sh 'docker compose up -d --build'
             }
         }
         
@@ -34,7 +34,7 @@ pipeline {
                 // Tunggu 10 detik biar server nyala dulu
                 sleep 10 
                 // Cek status container
-                sh 'docker-compose ps'
+                sh 'docker compose ps'
             }
         }
     }
