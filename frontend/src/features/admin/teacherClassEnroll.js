@@ -26,7 +26,7 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
   const [isDeleteConfirmClosing, setIsDeleteConfirmClosing] = useState(false);
   const [isDetailModalClosing, setIsDetailModalClosing] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async() => {
     setLoading(true);
     setError(null);
     try {
@@ -60,19 +60,19 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
   const showMessage = (text, type = 'success') => {
     setMessage(text);
     setMessageType(type);
-    
+
     setTimeout(() => {
       setMessage('');
       setMessageType('');
     }, 6000);
   };
 
-  const handleAssignGuru = async (e) => {
+  const handleAssignGuru = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
     setIsAssigning(true);
-    
+
     if (!activeTASemester || !selectedGuruId || !selectedMapelId || !selectedKelasId) {
       showMessage('Please complete all selections.', 'error');
       setIsAssigning(false);
@@ -115,7 +115,7 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
   const getRandomColor = (index) => {
     const colors = [
       'from-rose-400 to-pink-500',
-      'from-orange-400 to-amber-500', 
+      'from-orange-400 to-amber-500',
       'from-emerald-400 to-cyan-500',
       'from-blue-400 to-indigo-500',
       'from-purple-400 to-violet-500',
@@ -136,10 +136,10 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
   // Group assignments by teacher
   const groupedAssignments = () => {
     const grouped = {};
-    
+
     filteredAssignments.forEach((assignment, index) => {
       const teacherKey = assignment.id_guru; // Use teacher ID as unique key
-      
+
       if (!grouped[teacherKey]) {
         grouped[teacherKey] = {
           teacher: {
@@ -152,23 +152,23 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
           isWaliKelas: false // Check if teacher is homeroom teacher
         };
       }
-      
+
       grouped[teacherKey].subjects.add(assignment.nama_mapel);
       grouped[teacherKey].classes.add(assignment.nama_kelas);
       grouped[teacherKey].assignments.push(assignment);
-      
+
       // Check if this teacher is wali kelas for any assignment
       if (assignment.is_wali_kelas === 1) {
         grouped[teacherKey].isWaliKelas = true;
       }
     });
-    
+
     // Convert Sets to Arrays for rendering
     Object.keys(grouped).forEach(key => {
       grouped[key].subjects = Array.from(grouped[key].subjects);
       grouped[key].classes = Array.from(grouped[key].classes);
     });
-    
+
     return grouped;
   };
 
@@ -248,17 +248,17 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
   };
 
   // Function to confirm delete assignment
-  const confirmDeleteAssignment = async () => {
+  const confirmDeleteAssignment = async() => {
     if (!assignmentToDelete) return;
 
     try {
       // Start closing animations immediately for smooth UX
       setIsDeleteConfirmClosing(true);
       setIsDetailModalClosing(true);
-      
+
       // Perform delete operation
       await adminApi.deleteGuruMapelKelasAssignment(assignmentToDelete.id_guru_mapel_kelas);
-      
+
       // Complete modal closures
       setTimeout(() => {
         setShowDeleteConfirm(false);
@@ -269,19 +269,19 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
         setEditMode(false);
         setIsDetailModalClosing(false);
       }, 150);
-      
+
       // Delay data refresh to avoid white flash during modal close
-      setTimeout(async () => {
+      setTimeout(async() => {
         // Use a more gentle refresh without full loading state
         try {
-          const assignmentsData = activeTASemester ? 
-            await adminApi.getGuruMapelKelasAssignments(activeTASemester.id_ta_semester) : 
+          const assignmentsData = activeTASemester ?
+            await adminApi.getGuruMapelKelasAssignments(activeTASemester.id_ta_semester) :
             [];
           setAssignments(assignmentsData);
-          
+
           setMessage('Assignment berhasil dihapus.');
           setMessageType('success');
-          
+
           // Clear success message after delay
           setTimeout(() => {
             setMessage('');
@@ -291,7 +291,7 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
           console.error('Error refreshing data:', refreshError);
         }
       }, 200);
-      
+
     } catch (error) {
       // Complete modal closures even on error
       setTimeout(() => {
@@ -303,11 +303,11 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
         setEditMode(false);
         setIsDetailModalClosing(false);
       }, 150);
-      
+
       setTimeout(() => {
         setMessage(error.response?.data?.message || 'Gagal menghapus assignment.');
         setMessageType('error');
-        
+
         // Clear error message after delay
         setTimeout(() => {
           setMessage('');
@@ -334,7 +334,7 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
   // Render grouped assignments table
   const renderGroupedAssignmentsTable = () => {
     const grouped = groupedAssignments();
-    
+
     return (
       <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm bg-white">
         <table className="min-w-full divide-y divide-gray-200">
@@ -350,8 +350,8 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {Object.values(grouped).map((group, index) => (
-              <tr 
-                key={group.teacher.id_guru} 
+              <tr
+                key={group.teacher.id_guru}
                 className={`hover:bg-gray-50 transition-all duration-200 cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}
                 onClick={() => openTeacherDetail(group)}
               >
@@ -519,12 +519,12 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
   // Render grouped assignments cards
   const renderGroupedAssignmentsCards = () => {
     const grouped = groupedAssignments();
-    
+
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Object.values(grouped).map((group, index) => (
-          <div 
-            key={group.teacher.id_guru} 
+          <div
+            key={group.teacher.id_guru}
             className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 flex flex-col h-full cursor-pointer"
             onClick={() => openTeacherDetail(group)}
           >
@@ -698,8 +698,8 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
           {/* Message Display */}
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -744,8 +744,8 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Teacher Selection */}
                     <div className="relative">
-                      <select 
-                        value={selectedGuruId} 
+                      <select
+                        value={selectedGuruId}
                         onChange={(e) => setSelectedGuruId(parseInt(e.target.value))}
                         className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none"
                       >
@@ -761,8 +761,8 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
 
                     {/* Subject Selection */}
                     <div className="relative">
-                      <select 
-                        value={selectedMapelId} 
+                      <select
+                        value={selectedMapelId}
                         onChange={(e) => setSelectedMapelId(parseInt(e.target.value))}
                         className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none"
                       >
@@ -778,8 +778,8 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
 
                     {/* Class Selection */}
                     <div className="relative">
-                      <select 
-                        value={selectedKelasId} 
+                      <select
+                        value={selectedKelasId}
                         onChange={(e) => setSelectedKelasId(parseInt(e.target.value))}
                         className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none"
                       >
@@ -846,11 +846,11 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
                           disabled={currentWaliKelas && currentWaliKelas.id_guru !== selectedGuruId}
                         />
                         <div className={`w-14 h-7 rounded-full transition-all duration-300 ${
-                          isWaliKelas 
-                            ? 'bg-gradient-to-r from-yellow-400 to-amber-500' 
+                          isWaliKelas
+                            ? 'bg-gradient-to-r from-yellow-400 to-amber-500'
                             : currentWaliKelas && currentWaliKelas.id_guru !== selectedGuruId
-                            ? 'bg-gray-200'
-                            : 'bg-gray-300'
+                              ? 'bg-gray-200'
+                              : 'bg-gray-300'
                         }`}>
                           <div className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
                             isWaliKelas ? 'translate-x-7' : 'translate-x-0'
@@ -910,35 +910,35 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
                       Teacher Assignments
                     </span>
                   </h3>
-                  
+
                   <div className="flex space-x-3 mt-3 md:mt-0">
                     <div className="relative">
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search assignments..." 
+                        placeholder="Search assignments..."
                         className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                       />
                       <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                     </div>
-                    
+
                     <div className="flex bg-gray-100 rounded-lg p-1">
-                      <button 
+                      <button
                         onClick={() => setViewMode('grouped')}
                         className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'grouped' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                         title="Grouped View"
                       >
                         <i className="fas fa-users"></i>
                       </button>
-                      <button 
+                      <button
                         onClick={() => setViewMode('table')}
                         className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'table' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                         title="Table View"
                       >
                         <i className="fas fa-table"></i>
                       </button>
-                      <button 
+                      <button
                         onClick={() => setViewMode('card')}
                         className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'card' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                         title="Card View"
@@ -950,8 +950,8 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
                 </div>
 
                 {filteredAssignments.length > 0 ? (
-                  viewMode === 'grouped' ? renderGroupedAssignmentsCards() : 
-                  viewMode === 'table' ? renderAssignmentsTable() : renderAssignmentsCards()
+                  viewMode === 'grouped' ? renderGroupedAssignmentsCards() :
+                    viewMode === 'table' ? renderAssignmentsTable() : renderAssignmentsCards()
                 ) : (
                   <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
                     <div className="inline-block p-6 bg-gray-100 rounded-full mb-4">
@@ -961,7 +961,7 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
                       {searchTerm ? 'No Assignments Match Search' : 'No Teacher Assignments'}
                     </h5>
                     <p className="text-gray-500">
-                      {searchTerm 
+                      {searchTerm
                         ? `No assignments match your search for "${searchTerm}".`
                         : 'No teacher assignments are registered for the active semester.'
                       }
@@ -1012,15 +1012,15 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <button 
+                  <button
                     onClick={toggleEditMode}
                     className={`${editMode ? 'bg-red-400 hover:bg-red-500' : 'bg-blue-400 hover:bg-blue-500'} text-white px-3 py-1 rounded-lg transition-colors duration-200 flex items-center`}
-                    title={editMode ? "Cancel Edit" : "Edit Assignments"}
+                    title={editMode ? 'Cancel Edit' : 'Edit Assignments'}
                   >
                     <i className={`fas ${editMode ? 'fa-times' : 'fa-edit'} mr-1`}></i>
                     {editMode ? 'Cancel' : 'Edit'}
                   </button>
-                  <button 
+                  <button
                     onClick={closeModal}
                     className="bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors duration-200"
                   >
@@ -1036,98 +1036,98 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
                 <i className="fas fa-list-ul mr-2 text-emerald-500"></i>
                 Subject-Class Assignments
               </h3>
-              
+
               <div className="space-y-4">
                 {Object.values(getClassSubjectMapping(selectedTeacherDetail.assignments)).map((classData) => {
                   // Check if teacher is wali kelas for this class
                   const isWaliKelasForClass = classData.subjects.some(s => s.assignment.is_wali_kelas === 1);
-                  
+
                   return (
-                  <div key={classData.kelas} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center flex-1">
-                        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-3 rounded-lg mr-4">
-                          <i className="fas fa-door-open text-white text-lg"></i>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-semibold text-gray-800 text-lg">{classData.kelas}</h4>
-                            {isWaliKelasForClass && (
-                              <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-bold flex items-center">
-                                <i className="fas fa-home mr-1"></i>
-                                Wali Kelas
-                              </span>
-                            )}
+                    <div key={classData.kelas} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center flex-1">
+                          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-3 rounded-lg mr-4">
+                            <i className="fas fa-door-open text-white text-lg"></i>
                           </div>
-                          <p className="text-gray-500 text-sm">{classData.tahun_ajaran} - {classData.semester}</p>
-                          <p className="text-gray-400 text-xs">{classData.subjects.length} subject{classData.subjects.length > 1 ? 's' : ''}</p>
-                        </div>
-                      </div>
-                      
-                      {/* Remove Wali Kelas Button */}
-                      {editMode && isWaliKelasForClass && (
-                        <button
-                          onClick={async () => {
-                            if (window.confirm(`Remove ${selectedTeacherDetail.teacher.nama_guru} sebagai wali kelas dari ${classData.kelas}?`)) {
-                              try {
-                                await adminApi.removeWaliKelas(classData.id_kelas);
-                                setMessage(`Wali kelas berhasil dihapus dari ${classData.kelas}.`);
-                                setMessageType('success');
-                                setTimeout(() => {
-                                  setMessage('');
-                                  setMessageType('');
-                                  closeModal();
-                                  fetchData();
-                                }, 1500);
-                              } catch (err) {
-                                setMessage(err.message);
-                                setMessageType('error');
-                                setTimeout(() => {
-                                  setMessage('');
-                                  setMessageType('');
-                                }, 3000);
-                              }
-                            }
-                          }}
-                          className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-lg transition-colors duration-200 flex items-center text-sm"
-                          title="Remove Wali Kelas"
-                        >
-                          <i className="fas fa-user-times mr-1"></i>
-                          Remove Wali Kelas
-                        </button>
-                      )}
-                    </div>
-                    
-                    {/* Subject badges */}
-                    <div className="ml-16">
-                      <div className="flex flex-wrap gap-2">
-                        {classData.subjects.map((subjectData, idx) => (
-                          <div key={idx} className="relative group">
-                            <div className="bg-white border border-gray-300 rounded-lg px-3 py-2 flex items-center space-x-2 hover:shadow-md transition-all duration-200">
-                              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-1.5 rounded-md">
-                                <i className={`fas ${getSubjectIcon(subjectData.nama_mapel)} text-white text-xs`}></i>
-                              </div>
-                              <span className="text-sm font-medium text-gray-700">{subjectData.nama_mapel}</span>
-                              
-                              {editMode && (
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    handleDeleteAssignment(subjectData.assignment);
-                                  }}
-                                  className="bg-red-500 hover:bg-red-600 text-white p-1 rounded-md ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                                  title="Delete this assignment"
-                                >
-                                  <i className="fas fa-trash text-xs"></i>
-                                </button>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-semibold text-gray-800 text-lg">{classData.kelas}</h4>
+                              {isWaliKelasForClass && (
+                                <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-bold flex items-center">
+                                  <i className="fas fa-home mr-1"></i>
+                                Wali Kelas
+                                </span>
                               )}
                             </div>
+                            <p className="text-gray-500 text-sm">{classData.tahun_ajaran} - {classData.semester}</p>
+                            <p className="text-gray-400 text-xs">{classData.subjects.length} subject{classData.subjects.length > 1 ? 's' : ''}</p>
                           </div>
-                        ))}
+                        </div>
+
+                        {/* Remove Wali Kelas Button */}
+                        {editMode && isWaliKelasForClass && (
+                          <button
+                            onClick={async() => {
+                              if (window.confirm(`Remove ${selectedTeacherDetail.teacher.nama_guru} sebagai wali kelas dari ${classData.kelas}?`)) {
+                                try {
+                                  await adminApi.removeWaliKelas(classData.id_kelas);
+                                  setMessage(`Wali kelas berhasil dihapus dari ${classData.kelas}.`);
+                                  setMessageType('success');
+                                  setTimeout(() => {
+                                    setMessage('');
+                                    setMessageType('');
+                                    closeModal();
+                                    fetchData();
+                                  }, 1500);
+                                } catch (err) {
+                                  setMessage(err.message);
+                                  setMessageType('error');
+                                  setTimeout(() => {
+                                    setMessage('');
+                                    setMessageType('');
+                                  }, 3000);
+                                }
+                              }
+                            }}
+                            className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-lg transition-colors duration-200 flex items-center text-sm"
+                            title="Remove Wali Kelas"
+                          >
+                            <i className="fas fa-user-times mr-1"></i>
+                          Remove Wali Kelas
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Subject badges */}
+                      <div className="ml-16">
+                        <div className="flex flex-wrap gap-2">
+                          {classData.subjects.map((subjectData, idx) => (
+                            <div key={idx} className="relative group">
+                              <div className="bg-white border border-gray-300 rounded-lg px-3 py-2 flex items-center space-x-2 hover:shadow-md transition-all duration-200">
+                                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-1.5 rounded-md">
+                                  <i className={`fas ${getSubjectIcon(subjectData.nama_mapel)} text-white text-xs`}></i>
+                                </div>
+                                <span className="text-sm font-medium text-gray-700">{subjectData.nama_mapel}</span>
+
+                                {editMode && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      handleDeleteAssignment(subjectData.assignment);
+                                    }}
+                                    className="bg-red-500 hover:bg-red-600 text-white p-1 rounded-md ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                    title="Delete this assignment"
+                                  >
+                                    <i className="fas fa-trash text-xs"></i>
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
                   );
                 })}
               </div>
@@ -1174,7 +1174,7 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
             {/* Modal Footer */}
             <div className="bg-gray-50 px-6 py-4 rounded-b-2xl">
               <div className="flex justify-end">
-                <button 
+                <button
                   onClick={closeModal}
                   className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-6 py-2 rounded-lg transition-all duration-200 flex items-center"
                 >
@@ -1189,11 +1189,11 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
 
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && assignmentToDelete && (
-        <div 
+        <div
           className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-all duration-300 ease-in-out ${
             isDeleteConfirmClosing ? 'animate-fadeOut' : 'animate-fadeIn'
           }`}
-          style={{zIndex: 9999}}
+          style={{ zIndex: 9999 }}
         >
           <div className={`bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 ease-out ${
             isDeleteConfirmClosing ? 'animate-slideOutDown' : 'animate-slideInUp'
@@ -1215,7 +1215,7 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
             <div className="p-6">
               <div className="mb-4">
                 <p className="text-gray-700 mb-3">Are you sure you want to delete this assignment?</p>
-                
+
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
@@ -1250,14 +1250,14 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
 
             {/* Confirmation Footer */}
             <div className="bg-gray-50 px-6 py-4 rounded-b-2xl flex justify-end space-x-3">
-              <button 
+              <button
                 onClick={closeDeleteConfirmModal}
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center"
               >
                 <i className="fas fa-times mr-2"></i>
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={confirmDeleteAssignment}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center"
               >

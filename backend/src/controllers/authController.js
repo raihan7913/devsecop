@@ -8,106 +8,106 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 
 // Helper untuk hashing password (sesuai dengan yang digunakan di Python hashlib.sha256)
 function hashPasswordPythonStyle(password) {
-    return createHash('sha256').update(password).digest('hex');
+  return createHash('sha256').update(password).digest('hex');
 }
 
 // Helper untuk hashing dengan bcrypt (more secure)
 async function hashPasswordBcrypt(password) {
-    const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(password, salt);
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
 }
 
 exports.login = (req, res) => {
-    const { username, password, user_type } = req.body;
-    const db = getDb();
+  const { username, password, user_type } = req.body;
+  const db = getDb();
 
-    let tableName;
-    let usernameField;
-    let idField;
-    let nameField;
+  let tableName;
+  let usernameField;
+  let idField;
+  let nameField;
 
-    switch (user_type) {
-        case 'admin':
-            tableName = 'Admin';
-            usernameField = 'username';
-            idField = 'id_admin';
-            nameField = 'nama';
-            break;
-        case 'guru':
-            tableName = 'Guru';
-            usernameField = 'username';
-            idField = 'id_guru';
-            nameField = 'nama_guru';
-            break;
-        case 'siswa':
-            tableName = 'Siswa';
-            usernameField = 'nama_siswa'; // Untuk siswa, username adalah nama_siswa
-            idField = 'id_siswa';
-            nameField = 'nama_siswa';
-            break;
-        default:
-            return res.status(400).json({ message: 'Tipe pengguna tidak valid.' });
+  switch (user_type) {
+  case 'admin':
+    tableName = 'Admin';
+    usernameField = 'username';
+    idField = 'id_admin';
+    nameField = 'nama';
+    break;
+  case 'guru':
+    tableName = 'Guru';
+    usernameField = 'username';
+    idField = 'id_guru';
+    nameField = 'nama_guru';
+    break;
+  case 'siswa':
+    tableName = 'Siswa';
+    usernameField = 'nama_siswa'; // Untuk siswa, username adalah nama_siswa
+    idField = 'id_siswa';
+    nameField = 'nama_siswa';
+    break;
+  default:
+    return res.status(400).json({ message: 'Tipe pengguna tidak valid.' });
+  }
+
+  const query = `SELECT ${idField}, ${nameField}, password_hash FROM ${tableName} WHERE ${usernameField} = ?`;
+
+  db.get(query, [username], async(err, user) => {
+    if (err) {
+      console.error('Database error during login:', err.message);
+      return res.status(500).json({ message: 'Terjadi kesalahan server.' });
+    }
+    if (!user) {
+      return res.status(401).json({ message: 'Username atau password salah.' });
     }
 
-    const query = `SELECT ${idField}, ${nameField}, password_hash FROM ${tableName} WHERE ${usernameField} = ?`;
+    // Bandingkan password - support both SHA256 (legacy) and bcrypt
+    let isPasswordValid = false;
 
-    db.get(query, [username], async (err, user) => {
-        if (err) {
-            console.error('Database error during login:', err.message);
-            return res.status(500).json({ message: 'Terjadi kesalahan server.' });
-        }
-        if (!user) {
-            return res.status(401).json({ message: 'Username atau password salah.' });
-        }
+    // Try bcrypt first (if password was hashed with bcrypt)
+    if (user.password_hash.startsWith('$2a$') || user.password_hash.startsWith('$2b$')) {
+      isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    } else {
+      // Fallback to SHA256 for legacy passwords
+      isPasswordValid = hashPasswordPythonStyle(password) === user.password_hash;
 
-        // Bandingkan password - support both SHA256 (legacy) and bcrypt
-        let isPasswordValid = false;
-        
-        // Try bcrypt first (if password was hashed with bcrypt)
-        if (user.password_hash.startsWith('$2a$') || user.password_hash.startsWith('$2b$')) {
-            isPasswordValid = await bcrypt.compare(password, user.password_hash);
-        } else {
-            // Fallback to SHA256 for legacy passwords
-            isPasswordValid = hashPasswordPythonStyle(password) === user.password_hash;
-            
-            // If SHA256 worked, upgrade to bcrypt for better security
-            if (isPasswordValid) {
-                const newHash = await hashPasswordBcrypt(password);
-                const updateQuery = `UPDATE ${tableName} SET password_hash = ? WHERE ${idField} = ?`;
-                db.run(updateQuery, [newHash, user[idField]], (err) => {
-                    if (err) {
-                        console.error('Failed to upgrade password hash:', err);
-                    } else {
-                        console.log(`✅ Password upgraded to bcrypt for ${user_type}: ${user[nameField]}`);
-                    }
-                });
-            }
-        }
-
-        if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Username atau password salah.' });
-        }
-
-        // Generate JWT token
-        const token = jwt.sign(
-            { 
-                id: user[idField], 
-                user_type: user_type, 
-                nama: user[nameField] 
-            },
-            JWT_SECRET,
-            { expiresIn: JWT_EXPIRES_IN }
-        );
-
-        res.status(200).json({
-            success: true,
-            message: 'Login berhasil!',
-            user: {
-                id: user[idField],
-                username: user[nameField],
-                type: user_type
-            },
-            token: token // JWT token untuk authentication
+      // If SHA256 worked, upgrade to bcrypt for better security
+      if (isPasswordValid) {
+        const newHash = await hashPasswordBcrypt(password);
+        const updateQuery = `UPDATE ${tableName} SET password_hash = ? WHERE ${idField} = ?`;
+        db.run(updateQuery, [newHash, user[idField]], (err) => {
+          if (err) {
+            console.error('Failed to upgrade password hash:', err);
+          } else {
+            console.log(`✅ Password upgraded to bcrypt for ${user_type}: ${user[nameField]}`);
+          }
         });
+      }
+    }
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Username atau password salah.' });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        id: user[idField],
+        user_type: user_type,
+        nama: user[nameField]
+      },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES_IN }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Login berhasil!',
+      user: {
+        id: user[idField],
+        username: user[nameField],
+        type: user_type
+      },
+      token: token // JWT token untuk authentication
     });
+  });
 };

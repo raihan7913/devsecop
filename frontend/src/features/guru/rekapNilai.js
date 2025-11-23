@@ -12,12 +12,12 @@ const RekapNilai = ({ activeTASemester, userId }) => {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
-  const fetchData = async () => {
+  const fetchData = async() => {
     setLoading(true);
     setError(null);
     try {
       if (!userId || !activeTASemester) {
-        setError("Informasi guru atau tahun ajaran aktif tidak tersedia.");
+        setError('Informasi guru atau tahun ajaran aktif tidak tersedia.');
         return;
       }
       const assignmentsData = await guruApi.getGuruAssignments(userId, activeTASemester.id_ta_semester);
@@ -33,7 +33,7 @@ const RekapNilai = ({ activeTASemester, userId }) => {
     }
   };
 
-  const fetchRekap = async () => {
+  const fetchRekap = async() => {
     if (selectedAssignment && activeTASemester && userId) {
       const [kelasId, mapelId] = selectedAssignment.split('-').map(Number);
       try {
@@ -70,7 +70,7 @@ const RekapNilai = ({ activeTASemester, userId }) => {
     if (!processedRekap[item.nama_siswa]) {
       processedRekap[item.nama_siswa] = { id_siswa: item.id_siswa, nama_siswa: item.nama_siswa };
     }
-    
+
     // Create column name based on jenis_nilai and urutan_tp
     let columnName;
     if (item.jenis_nilai === 'TP') {
@@ -80,7 +80,7 @@ const RekapNilai = ({ activeTASemester, userId }) => {
     } else {
       columnName = item.jenis_nilai; // fallback
     }
-    
+
     processedRekap[item.nama_siswa][columnName] = item.nilai;
     gradeTypes.add(columnName);
   });
@@ -145,16 +145,16 @@ const RekapNilai = ({ activeTASemester, userId }) => {
                       .map(tipe => row[tipe])
                       .filter(n => typeof n === 'number');
                     const tpAverage = tpGrades.length > 0 ? tpGrades.reduce((sum, n) => sum + n, 0) / tpGrades.length : 0;
-                    
+
                     // Get UAS value
                     const uasValue = row['UAS'];
-                    
+
                     // Calculate final grade (70% TP + 30% UAS)
                     let finalGrade = '-';
                     if (tpGrades.length > 0 && typeof uasValue === 'number') {
                       finalGrade = (tpAverage * 0.7 + uasValue * 0.3).toFixed(2);
                     }
-                    
+
                     return (
                       <tr key={row.id_siswa}>
                         <td>{row.nama_siswa}</td>

@@ -11,7 +11,7 @@ const RequestGradeChangeModal = ({ grade, onClose, onSave, adminId, teachers }) 
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
@@ -31,7 +31,7 @@ const RequestGradeChangeModal = ({ grade, onClose, onSave, adminId, teachers }) 
         nilai_baru: parseFloat(newGradeValue),
         catatan_admin: catatanAdmin
       };
-      
+
       const response = await adminApi.createGradeChangeRequest(requestData);
       setMessage(response.message);
       setMessageType('success');
@@ -121,7 +121,7 @@ const GradeManagementAdmin = ({ adminId }) => { // Terima adminId dari Dashboard
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [selectedGrade, setSelectedGrade] = useState(null);
 
-  const fetchGradesAndTeachers = async () => {
+  const fetchGradesAndTeachers = async() => {
     setLoading(true);
     setError(null);
     try {

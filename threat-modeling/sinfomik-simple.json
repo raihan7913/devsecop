@@ -1,0 +1,21 @@
+{
+  "version": "2.2.0",
+  "summary": {
+    "title": "Sinfomik Academic Management System",
+    "owner": "Development Team",
+    "description": "Web-based academic management system for managing students, teachers, grades, and analytics"
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "id": 1,
+        "title": "Main System Architecture",
+        "diagramType": "STRIDE",
+        "version": "2.2.0",
+        "description": "Core system components and data flows",
+        "cells": []
+      }
+    ]
+  }
+}

@@ -10,16 +10,16 @@ router.use(isAdminOrGuru);
 
 // Configure multer for memory storage
 const storage = multer.memoryStorage();
-const upload = multer({ 
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            cb(null, true);
-        } else {
-            cb(new Error('Only .xlsx files are allowed'), false);
-        }
-    },
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only .xlsx files are allowed'), false);
+    }
+  },
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
 
 // Export template Excel

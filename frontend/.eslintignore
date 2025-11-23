@@ -1,0 +1,11 @@
+# ESLint ignore patterns
+node_modules/
+build/
+dist/
+coverage/
+public/
+*.min.js
+*.bundle.js
+serviceWorker.js
+reportWebVitals.js
+setupTests.js

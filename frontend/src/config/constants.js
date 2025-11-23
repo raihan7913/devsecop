@@ -12,7 +12,7 @@ export const ALLOWED_MAPEL_WALI = [
   'LIFE SKILLS',
   // Some datasets may use Greek characters for MATEMATIKA; include both variants
   'ΜΑΤΕΜΑΤΙΚΑ',
-  'MATEMATIKA',
+  'MATEMATIKA'
 ];
 
 // Official class names in the school
@@ -34,5 +34,5 @@ export const SCHOOL_CLASSES = [
   '5 Macakal',
   '6 Gumilang',
   '6 Sonagar',
-  '6 Parigel',
+  '6 Parigel'
 ];

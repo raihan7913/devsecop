@@ -7,7 +7,15 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "normalize": "node src/scripts/normalize_school_data.js",
-    "build": "cd ../frontend && npm install && npm run build"
+    "build": "cd ../frontend && npm install && npm run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:report": "eslint . --format html --output-file eslint-report.html",
+    "security:audit": "npm audit",
+    "security:audit-fix": "npm audit fix",
+    "security:audit-report": "powershell -ExecutionPolicy Bypass -File ../generate-security-report.ps1",
+    "security:check": "npm audit --audit-level=moderate",
+    "security:test": "powershell -ExecutionPolicy Bypass -File ../zap-quick-scan.ps1"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +36,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "eslint": "^8.57.1",
     "nodemon": "^3.1.4"
   }
 }

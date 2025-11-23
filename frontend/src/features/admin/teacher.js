@@ -14,7 +14,7 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
     setEditedTeacher(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
@@ -25,11 +25,11 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
         email: editedTeacher.email,
         ...(editedTeacher.password && { password: editedTeacher.password })
       };
-      
+
       const response = await adminApi.updateTeacher(editedTeacher.id_guru, dataToUpdate);
       setMessage(response.message);
       setMessageType('success');
-      
+
       setTimeout(() => {
         onSave();
         onClose();
@@ -45,36 +45,36 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
       <div className="bg-white p-8 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all duration-300">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold text-gray-800">Edit Teacher: {teacher.nama_guru}</h3>
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             className="text-gray-500 hover:text-gray-700 transition-colors duration-200 p-1 rounded-full hover:bg-gray-100"
           >
             <i className="fas fa-times text-lg"></i>
           </button>
         </div>
-        
+
         {message && (
           <div className={`p-4 mb-4 rounded-lg border-l-4 transition-all duration-300 ${
-            messageType === 'success' 
-              ? 'bg-green-50 border-green-500 text-green-700' 
+            messageType === 'success'
+              ? 'bg-green-50 border-green-500 text-green-700'
               : 'bg-red-50 border-red-500 text-red-700'
           }`}>
             <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
             {message}
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Teacher ID (cannot be changed):</label>
-            <input 
-              type="text" 
-              value={editedTeacher.id_guru} 
-              disabled 
+            <input
+              type="text"
+              value={editedTeacher.id_guru}
+              disabled
               className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
             />
           </div>
-          
+
           <div className="relative">
             <input
               type="text"
@@ -89,7 +89,7 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
               Username
             </label>
           </div>
-          
+
           <div className="relative">
             <input
               type="text"
@@ -104,7 +104,7 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
               Full Name
             </label>
           </div>
-          
+
           <div className="relative">
             <input
               type="email"
@@ -118,10 +118,10 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
               Email (optional)
             </label>
           </div>
-          
+
           <div className="relative">
             <input
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               name="password"
               value={editedTeacher.password || ''}
               onChange={handleChange}
@@ -131,25 +131,25 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
             <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-3 left-3 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-emerald-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-3 peer-focus:scale-75 peer-focus:-translate-y-4">
               New Password (leave blank to keep current)
             </label>
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors duration-200"
             >
               <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
             </button>
           </div>
-          
+
           <div className="flex space-x-3 pt-4">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="flex-1 py-3 px-4 rounded-lg shadow-md text-white bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg font-semibold"
             >
               Save Changes
             </button>
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               className="flex-1 py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-300 transform hover:-translate-y-0.5 font-semibold"
             >
               Cancel
@@ -180,7 +180,7 @@ const GuruManagement = () => {
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'card'
   const [searchTerm, setSearchTerm] = useState('');
 
-  const fetchTeachers = async () => {
+  const fetchTeachers = async() => {
     setLoading(true);
     setError(null);
     try {
@@ -200,14 +200,14 @@ const GuruManagement = () => {
   const showMessage = (text, type = 'success') => {
     setMessage(text);
     setMessageType(type);
-    
+
     setTimeout(() => {
       setMessage('');
       setMessageType('');
     }, 5000);
   };
 
-  const handleAddTeacher = async (e) => {
+  const handleAddTeacher = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
@@ -233,7 +233,7 @@ const GuruManagement = () => {
     setShowEditModal(true);
   };
 
-  const handleDeleteClick = async (id_guru, nama_guru) => {
+  const handleDeleteClick = async(id_guru, nama_guru) => {
     if (window.confirm(`Are you sure you want to delete teacher ${nama_guru} (ID: ${id_guru})? This action cannot be undone.`)) {
       try {
         const response = await adminApi.deleteTeacher(id_guru);
@@ -247,7 +247,7 @@ const GuruManagement = () => {
   };
 
   // Filter teachers based on search term
-  const filteredTeachers = teachers.filter(teacher => 
+  const filteredTeachers = teachers.filter(teacher =>
     teacher.nama_guru.toLowerCase().includes(searchTerm.toLowerCase()) ||
     teacher.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (teacher.email && teacher.email.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -274,17 +274,17 @@ const GuruManagement = () => {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{teacher.email || '-'}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <div className="flex space-x-2">
-                  <button 
-                    onClick={() => handleEditClick(teacher)} 
+                  <button
+                    onClick={() => handleEditClick(teacher)}
                     className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all duration-200 transform hover:-translate-y-0.5"
                   >
-                    <i class="fas fa-edit mr-1"></i> Edit
+                    <i className="fas fa-edit mr-1"></i> Edit
                   </button>
-                  <button 
-                    onClick={() => handleDeleteClick(teacher.id_guru, teacher.nama_guru)} 
+                  <button
+                    onClick={() => handleDeleteClick(teacher.id_guru, teacher.nama_guru)}
                     className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200 transform hover:-translate-y-0.5"
                   >
-                    <i class="fas fa-trash-alt mr-1"></i> Delete
+                    <i className="fas fa-trash-alt mr-1"></i> Delete
                   </button>
                 </div>
               </td>
@@ -320,13 +320,13 @@ const GuruManagement = () => {
               </p>
             </div>
             <div className="flex space-x-2 pt-2">
-              <button 
+              <button
                 onClick={() => handleEditClick(teacher)}
                 className="flex-1 py-2 px-3 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-all duration-200 transform hover:-translate-y-0.5 text-sm font-medium"
               >
                 <i className="fas fa-edit mr-1"></i> Edit
               </button>
-              <button 
+              <button
                 onClick={() => handleDeleteClick(teacher.id_guru, teacher.nama_guru)}
                 className="flex-1 py-2 px-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all duration-200 transform hover:-translate-y-0.5 text-sm font-medium"
               >
@@ -352,7 +352,7 @@ const GuruManagement = () => {
               </span>
             </h2>
             <div className="flex space-x-2">
-              <button 
+              <button
                 onClick={fetchTeachers}
                 className="p-2 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition-colors duration-200"
               >
@@ -364,8 +364,8 @@ const GuruManagement = () => {
           {/* Message Display */}
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -399,7 +399,7 @@ const GuruManagement = () => {
 
                 <div className="relative">
                   <input
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     value={newTeacher.password}
                     onChange={(e) => setNewTeacher({ ...newTeacher, password: e.target.value })}
                     required
@@ -409,8 +409,8 @@ const GuruManagement = () => {
                   <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-3 left-3 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-emerald-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-3 peer-focus:scale-75 peer-focus:-translate-y-4">
                     Password
                   </label>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors duration-200"
                   >
@@ -467,23 +467,23 @@ const GuruManagement = () => {
               </h4>
               <div className="flex space-x-3 mt-3 md:mt-0">
                 <div className="relative">
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search teachers..." 
+                    placeholder="Search teachers..."
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   />
                   <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                 </div>
                 <div className="flex bg-gray-100 rounded-lg p-1">
-                  <button 
+                  <button
                     onClick={() => setViewMode('table')}
                     className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'table' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                   >
                     <i className="fas fa-table"></i>
                   </button>
-                  <button 
+                  <button
                     onClick={() => setViewMode('card')}
                     className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'card' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                   >
@@ -518,7 +518,7 @@ const GuruManagement = () => {
                 </div>
                 <h5 className="text-lg font-medium text-gray-700 mb-2">No Teachers Found</h5>
                 <p className="text-gray-500 max-w-md mx-auto">
-                  {searchTerm ? `No teachers match your search for "${searchTerm}".` : "You haven't registered any teachers yet. Click the 'Register Teacher' button above to get started."}
+                  {searchTerm ? `No teachers match your search for "${searchTerm}".` : 'You haven\'t registered any teachers yet. Click the \'Register Teacher\' button above to get started.'}
                 </p>
               </div>
             )}

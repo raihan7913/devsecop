@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell,
-  LineChart, Line,
+  LineChart, Line
 } from 'recharts';
 import * as guruApi from '../../api/guru';
 import { fetchStudentAnalytics } from '../../api/analytics';
@@ -26,17 +26,17 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
     uniqueTipeNilaiPerMapel: new Map(), // Map<nama_mapel, Set<jenis_nilai>>
     gradesByStudentChart: [],
     gradesBySubjectChart: [],
-    gradeDistributionChart: [],
+    gradeDistributionChart: []
   });
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
   // Fetch list of classes where user is wali kelas
-  const fetchWaliKelasClassList = useCallback(async () => {
+  const fetchWaliKelasClassList = useCallback(async() => {
     try {
       if (!userId || !activeTASemester) return;
       const classes = await guruApi.getWaliKelasClassList(userId, activeTASemester.id_ta_semester);
       setClassList(classes);
-      
+
       // Auto-select first class if available
       if (classes.length > 0 && !selectedClass) {
         setSelectedClass(classes[0].id_kelas);
@@ -46,12 +46,12 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
     }
   }, [userId, activeTASemester, selectedClass]);
 
-  const fetchWaliKelasGrades = useCallback(async () => {
+  const fetchWaliKelasGrades = useCallback(async() => {
     setLoading(true);
     setError(null);
     try {
       if (!userId || !activeTASemester) {
-        setError("Informasi guru atau tahun ajaran aktif tidak tersedia.");
+        setError('Informasi guru atau tahun ajaran aktif tidak tersedia.');
         setLoading(false);
         return;
       }
@@ -69,7 +69,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
         uniqueTipeNilaiPerMapel: new Map(),
         gradesByStudentChart: [],
         gradesBySubjectChart: [],
-        gradeDistributionChart: [],
+        gradeDistributionChart: []
       });
     } finally {
       setLoading(false);
@@ -77,7 +77,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
   }, [activeTASemester, userId, selectedClass]);
 
   // Fetch student history when selected
-  const fetchStudentHistory = useCallback(async (studentId) => {
+  const fetchStudentHistory = useCallback(async(studentId) => {
     try {
       const result = await fetchStudentAnalytics(studentId, {});
       setStudentHistory(result);
@@ -120,10 +120,10 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
           nama_siswa: grade.nama_siswa,
           overall_total: 0,
           overall_count: 0,
-          subject_totals: new Map(), // { 'Fisika': { total: 0, count: 0 } }
+          subject_totals: new Map() // { 'Fisika': { total: 0, count: 0 } }
         });
       }
-      
+
       // If no grade data (student has no grades yet), skip the rest
       if (!grade.nama_mapel || !grade.jenis_nilai || grade.nilai === null) {
         return;
@@ -140,16 +140,16 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
           id_siswa: grade.id_siswa,
           nama_siswa: grade.nama_siswa,
           total_mapel_nilai: 0,
-          count_mapel_nilai: 0,
+          count_mapel_nilai: 0
         });
       }
       const studentSubjectData = studentsInSubjectMap.get(grade.id_siswa);
-      
+
       // Create display key for jenis_nilai (e.g., "TP 1", "TP 2", "UAS")
-      const displayKey = grade.jenis_nilai === 'TP' && grade.urutan_tp 
-        ? `${grade.jenis_nilai} ${grade.urutan_tp}` 
+      const displayKey = grade.jenis_nilai === 'TP' && grade.urutan_tp
+        ? `${grade.jenis_nilai} ${grade.urutan_tp}`
         : grade.jenis_nilai;
-      
+
       studentSubjectData[displayKey] = grade.nilai; // Assign grade by type
       studentSubjectData.total_mapel_nilai += grade.nilai;
       studentSubjectData.count_mapel_nilai++;
@@ -186,7 +186,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
     gradesPerSubjectTable.forEach((studentsMap, nama_mapel) => {
       const studentList = Array.from(studentsMap.values()).map(student => ({
         ...student,
-        rata_rata_mapel: student.count_mapel_nilai > 0 ? parseFloat((student.total_mapel_nilai / student.count_mapel_nilai).toFixed(2)) : 0,
+        rata_rata_mapel: student.count_mapel_nilai > 0 ? parseFloat((student.total_mapel_nilai / student.count_mapel_nilai).toFixed(2)) : 0
       })).sort((a, b) => a.nama_siswa.localeCompare(b.nama_siswa));
       finalGradesPerSubjectTable.set(nama_mapel, studentList);
     });
@@ -196,7 +196,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
       const studentSummaryObj = {
         id_siswa: student.id_siswa,
         nama_siswa: student.nama_siswa,
-        overall_final_average: student.overall_count > 0 ? parseFloat((student.overall_total / student.overall_count).toFixed(2)) : 0,
+        overall_final_average: student.overall_count > 0 ? parseFloat((student.overall_total / student.overall_count).toFixed(2)) : 0
       };
       student.subject_totals.forEach((data, nama_mapel) => {
         studentSummaryObj[`${nama_mapel}_RataRata`] = data.count > 0 ? parseFloat((data.total / data.count).toFixed(2)) : null;
@@ -218,19 +218,19 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
     const gradeDistributionChart = Object.entries(gradeDistributionCounts).map(([range, count]) => ({
       name: range,
       value: count,
-      percentage: totalStudentsForDistribution > 0 ? parseFloat(((count / totalStudentsForDistribution) * 100).toFixed(2)) : 0,
+      percentage: totalStudentsForDistribution > 0 ? parseFloat(((count / totalStudentsForDistribution) * 100).toFixed(2)) : 0
     }));
     // --- END NEW LOGIC ---
 
     // Chart data (re-using existing logic)
     const gradesByStudentChart = Array.from(summaryStudentMap.values()).map(student => ({
       nama_siswa: student.nama_siswa,
-      rata_rata: student.overall_count > 0 ? parseFloat((student.overall_total / student.overall_count).toFixed(2)) : 0,
+      rata_rata: student.overall_count > 0 ? parseFloat((student.overall_total / student.overall_count).toFixed(2)) : 0
     })).sort((a, b) => a.nama_siswa.localeCompare(b.nama_siswa));
 
     let gradesBySubjectChart = Array.from(subjectChartMap.entries()).map(([name, data]) => ({
       nama_mapel: name,
-      rata_rata: data.count > 0 ? parseFloat((data.total_nilai / data.count).toFixed(2)) : 0,
+      rata_rata: data.count > 0 ? parseFloat((data.total_nilai / data.count).toFixed(2)) : 0
     })).sort((a, b) => a.nama_mapel.localeCompare(b.nama_mapel));
 
     // === Apply Wali Kelas subject filter ===
@@ -261,7 +261,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
       uniqueTipeNilaiPerMapel: filteredUniqueTipeNilaiPerMapel,
       gradesByStudentChart,
       gradesBySubjectChart,
-      gradeDistributionChart, // Use the newly calculated distribution
+      gradeDistributionChart // Use the newly calculated distribution
     });
   };
 
@@ -296,8 +296,8 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
     } else if (sortConfig.key === key && sortConfig.direction === 'descending') {
-        direction = 'none'; // Add a 'none' state to remove sorting
-        key = null; // Reset key
+      direction = 'none'; // Add a 'none' state to remove sorting
+      key = null; // Reset key
     }
     setSortConfig({ key, direction });
   };
@@ -319,7 +319,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
 
   // Calculate statistics for overview
   const totalStudents = processedData.summaryTableData.length;
-  const avgClassGrade = totalStudents > 0 
+  const avgClassGrade = totalStudents > 0
     ? (processedData.summaryTableData.reduce((sum, s) => sum + s.overall_final_average, 0) / totalStudents).toFixed(2)
     : 0;
   const studentsAbove75 = processedData.summaryTableData.filter(s => s.overall_final_average >= 75).length;
@@ -334,7 +334,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
         <p className="text-gray-600">
           Tahun Ajaran {activeTASemester.tahun_ajaran} - Semester {activeTASemester.semester}
         </p>
-        
+
         {/* Class Selector - Only show if multiple classes */}
         {classList.length > 1 && (
           <div className="mt-4 flex items-center">
@@ -562,12 +562,12 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
               </thead>
               <tbody>
                 {sortedSummaryData.map((student, idx) => {
-                  const status = student.overall_final_average >= 75 ? 'Baik' : 
-                                 student.overall_final_average >= 60 ? 'Cukup' : 'Perlu Perhatian';
-                  const statusColor = student.overall_final_average >= 75 ? 'bg-green-100 text-green-800' : 
-                                      student.overall_final_average >= 60 ? 'bg-yellow-100 text-yellow-800' : 
-                                      'bg-red-100 text-red-800';
-                  
+                  const status = student.overall_final_average >= 75 ? 'Baik' :
+                    student.overall_final_average >= 60 ? 'Cukup' : 'Perlu Perhatian';
+                  const statusColor = student.overall_final_average >= 75 ? 'bg-green-100 text-green-800' :
+                    student.overall_final_average >= 60 ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800';
+
                   return (
                     <tr key={student.id_siswa} className="hover:bg-gray-50">
                       <td className="px-4 py-3 border">{idx + 1}</td>
@@ -642,7 +642,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
           <h3 style={{ marginTop: '40px' }}>Ringkasan Nilai Siswa Keseluruhan</h3>
           <div className="grades-table-wrapper comprehensive-grades-table">
             <div className="grades-grid-header comprehensive-grades-header"
-                 style={{ gridTemplateColumns: `minmax(180px, 1.5fr) repeat(${allSubjectNames.length}, minmax(120px, 1fr)) minmax(150px, 0.8fr)` }}>
+              style={{ gridTemplateColumns: `minmax(180px, 1.5fr) repeat(${allSubjectNames.length}, minmax(120px, 1fr)) minmax(150px, 0.8fr)` }}>
               <div className="grid-header-item sortable" onClick={() => requestSort('nama_siswa')}>
                 Nama Siswa {getSortIndicator('nama_siswa')}
               </div>
@@ -657,7 +657,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
             </div>
             {sortedSummaryData.map(student => (
               <div key={student.id_siswa} className="grades-grid-row comprehensive-grades-row"
-                   style={{ gridTemplateColumns: `minmax(180px, 1.5fr) repeat(${allSubjectNames.length}, minmax(120px, 1fr)) minmax(150px, 0.8fr)` }}>
+                style={{ gridTemplateColumns: `minmax(180px, 1.5fr) repeat(${allSubjectNames.length}, minmax(120px, 1fr)) minmax(150px, 0.8fr)` }}>
                 <div className="grid-cell-item student-name">{student.nama_siswa}</div>
                 {allSubjectNames.map(subject => (
                   <div key={`${student.id_siswa}-${subject}_RataRata`} className="grid-cell-item">
@@ -675,7 +675,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
       {activeView === 'analytics' && (
         <div>
           <h3 className="text-xl font-semibold text-gray-800 mb-6">Statistik & Analisis Kelas</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="p-4 bg-white border rounded-lg shadow">
               <h4 className="font-semibold text-gray-700 mb-4">Rata-rata Nilai per Siswa</h4>
@@ -847,7 +847,7 @@ const WaliKelasGradeView = ({ activeTASemester, userId }) => {
                     const avg = selectedStudent[`${subject}_RataRata`];
                     const status = avg >= 75 ? 'Baik' : avg >= 60 ? 'Cukup' : 'Perlu Perbaikan';
                     const statusColor = avg >= 75 ? 'text-green-600' : avg >= 60 ? 'text-yellow-600' : 'text-red-600';
-                    
+
                     return (
                       <tr key={subject} className="hover:bg-gray-50">
                         <td className="px-4 py-2 border">{subject}</td>

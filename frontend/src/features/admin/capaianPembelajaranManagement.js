@@ -21,19 +21,19 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
     fetchAtpData();
   }, [id_mapel, fase]);
 
-  const fetchAtpData = async () => {
+  const fetchAtpData = async() => {
     setLoading(true);
     setError(null);
     try {
       // Get JWT token from localStorage
       const token = localStorage.getItem('token');
-      
+
       const response = await fetch(`${API_BASE_URL}/api/excel/atp/${id_mapel}/${fase}`, {
         headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
+          'Authorization': token ? `Bearer ${token}` : ''
         }
       });
-      
+
       // Handle 401 Unauthorized
       if (response.status === 401) {
         localStorage.removeItem('token');
@@ -41,7 +41,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
         window.location.href = '/login';
         return;
       }
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch ATP data');
@@ -62,18 +62,18 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
     setEditedData(newData);
   };
 
-  const handleSaveChanges = async () => {
+  const handleSaveChanges = async() => {
     setSaving(true);
     setSaveMessage('');
     try {
       // Get JWT token from localStorage
       const token = localStorage.getItem('token');
-      
+
       const response = await fetch(`${API_BASE_URL}/api/excel/atp/${id_mapel}/${fase}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : '',
+          'Authorization': token ? `Bearer ${token}` : ''
         },
         body: JSON.stringify({ data: editedData })
       });
@@ -95,7 +95,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
       setSaveMessage('✓ Changes saved successfully!');
       setAtpData([...editedData]); // Update original data
       setIsEditMode(false);
-      
+
       setTimeout(() => setSaveMessage(''), 3000);
     } catch (err) {
       setSaveMessage(`✗ Error: ${err.message}`);
@@ -113,7 +113,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
   // Filter data (gunakan editedData saat edit mode, atpData saat view mode)
   const dataToDisplay = isEditMode ? editedData : atpData;
   const filteredData = dataToDisplay.filter(row => {
-    const matchesSearch = Object.values(row).some(val => 
+    const matchesSearch = Object.values(row).some(val =>
       String(val).toLowerCase().includes(searchTerm.toLowerCase())
     );
     const matchesKelas = filterKelas === 'all' || String(row.Kelas) === filterKelas;
@@ -140,7 +140,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
             </div>
             <div className="flex items-center space-x-3">
               {!isEditMode && (
-                <button 
+                <button
                   onClick={() => setIsEditMode(true)}
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center font-medium"
                 >
@@ -150,7 +150,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
               )}
               {isEditMode && (
                 <>
-                  <button 
+                  <button
                     onClick={handleSaveChanges}
                     disabled={saving}
                     className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center font-medium disabled:opacity-50 disabled:cursor-not-allowed"
@@ -158,7 +158,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                     <i className={`fas ${saving ? 'fa-spinner fa-spin' : 'fa-save'} mr-2`}></i>
                     {saving ? 'Saving...' : 'Save Changes'}
                   </button>
-                  <button 
+                  <button
                     onClick={handleCancelEdit}
                     disabled={saving}
                     className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center font-medium disabled:opacity-50 disabled:cursor-not-allowed"
@@ -168,7 +168,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                   </button>
                 </>
               )}
-              <button 
+              <button
                 onClick={onClose}
                 className="text-white hover:text-blue-200 transition-colors duration-200 p-2 hover:bg-white/20 rounded-full"
               >
@@ -187,16 +187,16 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
         <div className="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="relative">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search in all columns..." 
+                placeholder="Search in all columns..."
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
               <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
             </div>
-            <select 
+            <select
               value={filterKelas}
               onChange={(e) => setFilterKelas(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -206,7 +206,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                 <option key={`kelas-${idx}-${kelas}`} value={kelas}>Kelas {kelas}</option>
               ))}
             </select>
-            <select 
+            <select
               value={filterSemester}
               onChange={(e) => setFilterSemester(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -261,18 +261,18 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                   {filteredData.map((row, idx) => {
                     // Use pre-calculated original index from filtered data
                     const originalIndex = row._originalIndex;
-                    
+
                     // Create unique key from row data
                     const uniqueKey = `row-${originalIndex}-${row.Kelas}-${row.Semester}`;
-                    
+
                     return (
                       <tr key={uniqueKey} className={`hover:bg-blue-50 transition-colors duration-150 ${isEditMode ? 'bg-yellow-50' : ''}`}>
                         <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">{idx + 1}</td>
-                        
+
                         {/* Elemen - editable */}
                         <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
                           {isEditMode ? (
-                            <input 
+                            <input
                               type="text"
                               value={row.Elemen || ''}
                               onChange={(e) => handleCellEdit(originalIndex, 'Elemen', e.target.value)}
@@ -282,11 +282,11 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                             row.Elemen || '-'
                           )}
                         </td>
-                        
+
                         {/* CP - editable textarea */}
                         <td className="px-4 py-3 text-sm text-gray-700 border-r border-gray-200 max-w-xs">
                           {isEditMode ? (
-                            <textarea 
+                            <textarea
                               value={row['Capaian Pembelajaran (CP)'] || ''}
                               onChange={(e) => handleCellEdit(originalIndex, 'Capaian Pembelajaran (CP)', e.target.value)}
                               rows="3"
@@ -296,11 +296,11 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                             <div className="line-clamp-3">{row['Capaian Pembelajaran (CP)'] || '-'}</div>
                           )}
                         </td>
-                        
+
                         {/* TP - editable textarea */}
                         <td className="px-4 py-3 text-sm text-gray-700 border-r border-gray-200 max-w-md">
                           {isEditMode ? (
-                            <textarea 
+                            <textarea
                               value={row['Tujuan Pembelajaran (TP)'] || ''}
                               onChange={(e) => handleCellEdit(originalIndex, 'Tujuan Pembelajaran (TP)', e.target.value)}
                               rows="3"
@@ -310,11 +310,11 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                             <div className="line-clamp-3">{row['Tujuan Pembelajaran (TP)'] || '-'}</div>
                           )}
                         </td>
-                        
+
                         {/* KKTP - editable textarea */}
                         <td className="px-4 py-3 text-sm text-gray-700 border-r border-gray-200 max-w-md">
                           {isEditMode ? (
-                            <textarea 
+                            <textarea
                               value={row['Kriteria Ketercapaian Tujuan Pembelajaran (KKTP)'] || ''}
                               onChange={(e) => handleCellEdit(originalIndex, 'Kriteria Ketercapaian Tujuan Pembelajaran (KKTP)', e.target.value)}
                               rows="3"
@@ -324,11 +324,11 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                             <div className="line-clamp-3">{row['Kriteria Ketercapaian Tujuan Pembelajaran (KKTP)'] || '-'}</div>
                           )}
                         </td>
-                        
+
                         {/* Materi Pokok - editable */}
                         <td className="px-4 py-3 text-sm text-gray-700 border-r border-gray-200">
                           {isEditMode ? (
-                            <input 
+                            <input
                               type="text"
                               value={row['Materi Pokok'] || ''}
                               onChange={(e) => handleCellEdit(originalIndex, 'Materi Pokok', e.target.value)}
@@ -338,11 +338,11 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                             row['Materi Pokok'] || '-'
                           )}
                         </td>
-                        
+
                         {/* Kelas - editable */}
                         <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200 text-center font-medium">
                           {isEditMode ? (
-                            <input 
+                            <input
                               type="text"
                               value={row.Kelas || ''}
                               onChange={(e) => handleCellEdit(originalIndex, 'Kelas', e.target.value)}
@@ -352,11 +352,11 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
                             row.Kelas || '-'
                           )}
                         </td>
-                        
+
                         {/* Semester - editable */}
                         <td className="px-4 py-3 text-sm text-gray-900 text-center font-medium">
                           {isEditMode ? (
-                            <input 
+                            <input
                               type="text"
                               value={row.Semester || ''}
                               onChange={(e) => handleCellEdit(originalIndex, 'Semester', e.target.value)}
@@ -381,8 +381,8 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
               </div>
               <h5 className="text-lg font-medium text-gray-700 mb-2">No Data Found</h5>
               <p className="text-gray-500">
-                {searchTerm || filterKelas !== 'all' || filterSemester !== 'all' 
-                  ? 'No ATP data matches your filter criteria.' 
+                {searchTerm || filterKelas !== 'all' || filterSemester !== 'all'
+                  ? 'No ATP data matches your filter criteria.'
                   : 'No ATP data available for this phase.'}
               </p>
             </div>
@@ -415,7 +415,7 @@ const EditCapaianPembelajaranModal = ({ cp, onClose, onSave }) => {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
@@ -447,7 +447,7 @@ const EditCapaianPembelajaranModal = ({ cp, onClose, onSave }) => {
                 Edit Learning Achievement
               </span>
             </h3>
-            <button 
+            <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-2 hover:bg-gray-100 rounded-full"
             >
@@ -457,8 +457,8 @@ const EditCapaianPembelajaranModal = ({ cp, onClose, onSave }) => {
 
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -541,7 +541,7 @@ const ImportExcel = ({ onImportSuccess }) => {
     setMessage('');
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (!file) {
       setMessage('Please select an Excel file first');
@@ -556,15 +556,15 @@ const ImportExcel = ({ onImportSuccess }) => {
     try {
       // Get JWT token from localStorage
       const token = localStorage.getItem('token');
-      
+
       const response = await fetch(`${API_BASE_URL}/api/excel/import-cp`, {
         method: 'POST',
         headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
+          'Authorization': token ? `Bearer ${token}` : ''
         },
-        body: formData,
+        body: formData
       });
-      
+
       // Handle 401 Unauthorized
       if (response.status === 401) {
         localStorage.removeItem('token');
@@ -572,16 +572,16 @@ const ImportExcel = ({ onImportSuccess }) => {
         window.location.href = '/login';
         return;
       }
-      
+
       let data;
       try {
         data = await response.json();
       } catch (err) {
         throw new Error('Failed to process server response. Please check Excel file format.');
       }
-      
+
       if (!response.ok) throw new Error(data.message || 'Failed to import file');
-      
+
       setMessage(data.message);
       setMessageType('success');
       onImportSuccess();
@@ -603,7 +603,7 @@ const ImportExcel = ({ onImportSuccess }) => {
           Import from Excel
         </span>
       </h3>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-center space-x-3">
           <input
@@ -612,8 +612,8 @@ const ImportExcel = ({ onImportSuccess }) => {
             onChange={handleFileChange}
             className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer"
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             className="px-6 py-2 text-white bg-gradient-to-r from-orange-500 to-red-600 rounded-lg hover:from-orange-600 hover:to-red-700 transition-all duration-200 transform hover:-translate-y-0.5 font-medium shadow-lg flex items-center disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
           >
@@ -621,11 +621,11 @@ const ImportExcel = ({ onImportSuccess }) => {
             {loading ? 'Importing...' : 'Import'}
           </button>
         </div>
-        
+
         {message && (
           <div className={`p-4 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-            messageType === 'success' 
-              ? 'bg-green-50 border-green-500 text-green-700' 
+            messageType === 'success'
+              ? 'bg-green-50 border-green-500 text-green-700'
               : 'bg-red-50 border-red-500 text-red-700'
           }`}>
             <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -656,7 +656,7 @@ const CapaianPembelajaranManagement = () => {
   const [showAtpModal, setShowAtpModal] = useState(false);
   const [selectedAtpData, setSelectedAtpData] = useState(null);
 
-  const fetchCpsAndMapel = async () => {
+  const fetchCpsAndMapel = async() => {
     setLoading(true);
     setError(null);
     try {
@@ -683,16 +683,16 @@ const CapaianPembelajaranManagement = () => {
   const showMessage = (text, type = 'success') => {
     setMessage(text);
     setMessageType(type);
-    
+
     setTimeout(() => {
       setMessage('');
       setMessageType('');
     }, 5000);
   };
 
-  const handleAddCp = async (e) => {
+  const handleAddCp = async(e) => {
     e.preventDefault();
-    
+
     if (!newCp.deskripsi_cp.trim()) {
       showMessage('Learning achievement description must be filled', 'error');
       return;
@@ -721,7 +721,7 @@ const CapaianPembelajaranManagement = () => {
     setShowEditModal(true);
   };
 
-  const handleDeleteClick = async (id_cp, deskripsi_cp) => {
+  const handleDeleteClick = async(id_cp, deskripsi_cp) => {
     if (window.confirm(`Are you sure you want to delete Learning Achievement: "${deskripsi_cp.substring(0, 50)}..." (ID: ${id_cp})? This action cannot be undone.`)) {
       try {
         const response = await adminApi.deleteCapaianPembelajaran(id_cp);
@@ -748,21 +748,21 @@ const CapaianPembelajaranManagement = () => {
 
   // Get phase badge color
   const getPhaseBadgeColor = (fase) => {
-    switch(fase) {
-      case 'A': return 'from-blue-400 to-indigo-400';
-      case 'B': return 'from-orange-400 to-red-400';
-      case 'C': return 'from-purple-400 to-pink-400';
-      default: return 'from-gray-400 to-gray-500';
+    switch (fase) {
+    case 'A': return 'from-blue-400 to-indigo-400';
+    case 'B': return 'from-orange-400 to-red-400';
+    case 'C': return 'from-purple-400 to-pink-400';
+    default: return 'from-gray-400 to-gray-500';
     }
   };
 
   // Get phase icon
   const getPhaseIcon = (fase) => {
-    switch(fase) {
-      case 'A': return 'fa-star';
-      case 'B': return 'fa-certificate';
-      case 'C': return 'fa-trophy';
-      default: return 'fa-award';
+    switch (fase) {
+    case 'A': return 'fa-star';
+    case 'B': return 'fa-certificate';
+    case 'C': return 'fa-trophy';
+    default: return 'fa-award';
     }
   };
 
@@ -781,7 +781,7 @@ const CapaianPembelajaranManagement = () => {
                 <p className="text-emerald-100 mt-2">Manage curriculum learning achievements by phase</p>
               </div>
               <div className="flex space-x-2">
-                <button 
+                <button
                   onClick={fetchCpsAndMapel}
                   className="p-3 rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors duration-200"
                 >
@@ -842,8 +842,8 @@ const CapaianPembelajaranManagement = () => {
           {/* Message Display */}
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -960,16 +960,16 @@ const CapaianPembelajaranManagement = () => {
                   </h2>
                   <div className="flex space-x-3 mt-3 md:mt-0">
                     <div className="relative">
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search achievements..." 
+                        placeholder="Search achievements..."
                         className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                       />
                       <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                     </div>
-                    <select 
+                    <select
                       value={selectedSubject}
                       onChange={(e) => setSelectedSubject(e.target.value)}
                       className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
@@ -989,9 +989,9 @@ const CapaianPembelajaranManagement = () => {
                     </div>
                     <h5 className="text-lg font-medium text-gray-700 mb-2">No Learning Achievements Found</h5>
                     <p className="text-gray-500 max-w-md mx-auto">
-                      {searchTerm || selectedSubject !== 'all' ? 
-                        `No achievements match your search criteria.` : 
-                        "You haven't registered any learning achievements yet. Click the 'Add Learning Achievement' button above to get started."}
+                      {searchTerm || selectedSubject !== 'all' ?
+                        'No achievements match your search criteria.' :
+                        'You haven\'t registered any learning achievements yet. Click the \'Add Learning Achievement\' button above to get started.'}
                     </p>
                   </div>
                 )}
@@ -1002,7 +1002,7 @@ const CapaianPembelajaranManagement = () => {
                       .filter(mapel => filteredCps.some(cp => cp.id_mapel === mapel.id_mapel))
                       .map((mapel, idx) => {
                         const cpMapel = filteredCps.filter(cp => cp.id_mapel === mapel.id_mapel);
-                        
+
                         return (
                           <div key={mapel.id_mapel} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                             <div className={`bg-gradient-to-r ${idx % 3 === 0 ? 'from-blue-400 to-indigo-400' : idx % 3 === 1 ? 'from-emerald-400 to-cyan-400' : 'from-purple-400 to-pink-400'} p-4`}>
@@ -1016,11 +1016,11 @@ const CapaianPembelajaranManagement = () => {
                                 </span>
                               </div>
                             </div>
-                            
+
                             <div className="p-6 space-y-4">
                               {['A', 'B', 'C'].map(fase => {
                                 const cpFase = cpMapel.find(cp => cp.fase === fase);
-                                
+
                                 return (
                                   <div key={`${mapel.id_mapel}-${fase}`} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200">
                                     <div className="flex items-start space-x-4">
@@ -1036,19 +1036,19 @@ const CapaianPembelajaranManagement = () => {
                                           </h4>
                                           {cpFase && (
                                             <div className="flex space-x-2">
-                                              <button 
+                                              <button
                                                 onClick={() => handleViewAtpClick(mapel.id_mapel, fase, mapel.nama_mapel)}
                                                 className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-green-50 text-green-600 hover:bg-green-100 transition-all duration-200 transform hover:-translate-y-0.5"
                                               >
                                                 <i className="fas fa-table mr-1"></i> View Details ATP
                                               </button>
-                                              <button 
+                                              <button
                                                 onClick={() => handleEditClick(cpFase)}
                                                 className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all duration-200 transform hover:-translate-y-0.5"
                                               >
                                                 <i className="fas fa-edit mr-1"></i> Edit
                                               </button>
-                                              <button 
+                                              <button
                                                 onClick={() => handleDeleteClick(cpFase.id_cp, cpFase.deskripsi_cp)}
                                                 className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200 transform hover:-translate-y-0.5"
                                               >

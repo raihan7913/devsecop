@@ -8,7 +8,7 @@ const EditMataPelajaranModal = ({ mapel, onClose, onSave }) => {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
@@ -37,7 +37,7 @@ const EditMataPelajaranModal = ({ mapel, onClose, onSave }) => {
                 Edit Subject
               </span>
             </h3>
-            <button 
+            <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-2 hover:bg-gray-100 rounded-full"
             >
@@ -47,8 +47,8 @@ const EditMataPelajaranModal = ({ mapel, onClose, onSave }) => {
 
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -120,7 +120,7 @@ const MataPelajaranManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'card'
 
-  const fetchMataPelajaran = async () => {
+  const fetchMataPelajaran = async() => {
     setLoading(true);
     setError(null);
     try {
@@ -140,18 +140,18 @@ const MataPelajaranManagement = () => {
   const showMessage = (text, type = 'success') => {
     setMessage(text);
     setMessageType(type);
-    
+
     setTimeout(() => {
       setMessage('');
       setMessageType('');
     }, 5000);
   };
 
-  const handleAddMataPelajaran = async (e) => {
+  const handleAddMataPelajaran = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
-    
+
     if (!newMapelName.trim()) {
       showMessage('Subject name must be filled', 'error');
       return;
@@ -172,7 +172,7 @@ const MataPelajaranManagement = () => {
     setShowEditModal(true);
   };
 
-  const handleDeleteClick = async (id_mapel, nama_mapel) => {
+  const handleDeleteClick = async(id_mapel, nama_mapel) => {
     if (window.confirm(`Are you sure you want to delete subject "${nama_mapel}" (ID: ${id_mapel})? This action cannot be undone.`)) {
       try {
         const response = await adminApi.deleteMataPelajaran(id_mapel);
@@ -185,7 +185,7 @@ const MataPelajaranManagement = () => {
   };
 
   // Filter subjects based on search term
-  const filteredMataPelajaran = mataPelajaran.filter(mapel => 
+  const filteredMataPelajaran = mataPelajaran.filter(mapel =>
     mapel.nama_mapel.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -207,7 +207,7 @@ const MataPelajaranManagement = () => {
   const getSubjectColor = (index) => {
     const colors = [
       'from-emerald-400 to-cyan-400',
-      'from-blue-400 to-indigo-400', 
+      'from-blue-400 to-indigo-400',
       'from-purple-400 to-pink-400',
       'from-orange-400 to-red-400',
       'from-yellow-400 to-orange-400',
@@ -248,14 +248,14 @@ const MataPelajaranManagement = () => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <div className="flex space-x-2">
-                  <button 
-                    onClick={() => handleEditClick(mapel)} 
+                  <button
+                    onClick={() => handleEditClick(mapel)}
                     className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all duration-200 transform hover:-translate-y-0.5"
                   >
                     <i className="fas fa-edit mr-1"></i> Edit
                   </button>
-                  <button 
-                    onClick={() => handleDeleteClick(mapel.id_mapel, mapel.nama_mapel)} 
+                  <button
+                    onClick={() => handleDeleteClick(mapel.id_mapel, mapel.nama_mapel)}
                     className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200 transform hover:-translate-y-0.5"
                   >
                     <i className="fas fa-trash-alt mr-1"></i> Delete
@@ -294,13 +294,13 @@ const MataPelajaranManagement = () => {
               </span>
             </div>
             <div className="flex space-x-2">
-              <button 
+              <button
                 onClick={() => handleEditClick(mapel)}
                 className="flex-1 py-2 px-3 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-all duration-200 transform hover:-translate-y-0.5 text-sm font-medium"
               >
                 <i className="fas fa-edit mr-1"></i> Edit
               </button>
-              <button 
+              <button
                 onClick={() => handleDeleteClick(mapel.id_mapel, mapel.nama_mapel)}
                 className="flex-1 py-2 px-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all duration-200 transform hover:-translate-y-0.5 text-sm font-medium"
               >
@@ -328,7 +328,7 @@ const MataPelajaranManagement = () => {
                 <p className="text-emerald-100 mt-2">Manage academic subjects and curriculum</p>
               </div>
               <div className="flex space-x-2">
-                <button 
+                <button
                   onClick={fetchMataPelajaran}
                   className="p-3 rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors duration-200"
                 >
@@ -378,8 +378,8 @@ const MataPelajaranManagement = () => {
           {/* Message Display */}
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -455,23 +455,23 @@ const MataPelajaranManagement = () => {
                   </h2>
                   <div className="flex space-x-3 mt-3 md:mt-0">
                     <div className="relative">
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search subjects..." 
+                        placeholder="Search subjects..."
                         className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                       />
                       <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div className="flex bg-gray-100 rounded-lg p-1">
-                      <button 
+                      <button
                         onClick={() => setViewMode('table')}
                         className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'table' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                       >
                         <i className="fas fa-table"></i>
                       </button>
-                      <button 
+                      <button
                         onClick={() => setViewMode('card')}
                         className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'card' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                       >
@@ -488,7 +488,7 @@ const MataPelajaranManagement = () => {
                     </div>
                     <h5 className="text-lg font-medium text-gray-700 mb-2">No Subjects Found</h5>
                     <p className="text-gray-500 max-w-md mx-auto">
-                      {searchTerm ? `No subjects match your search for "${searchTerm}".` : "You haven't registered any subjects yet. Click the 'Add Subject' button above to get started."}
+                      {searchTerm ? `No subjects match your search for "${searchTerm}".` : 'You haven\'t registered any subjects yet. Click the \'Add Subject\' button above to get started.'}
                     </p>
                   </div>
                 )}

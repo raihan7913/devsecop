@@ -58,46 +58,102 @@ Sistem manajemen akademik berbasis web untuk sekolah dengan fitur lengkap untuk 
 ### Prerequisites
 - Node.js 16+ 
 - npm atau yarn
+- Git (optional)
 
-### Installation
+### 🚀 Automated Setup (Recommended - Windows)
 
-1. **Clone repository:**
-   ```bash
-   git clone https://github.com/athaanfl/sinfomik.git
-   cd sinfomik
-   ```
+Jalankan script setup otomatis:
 
-2. **Setup Backend:**
-   ```bash
-   cd backend
-   npm install
-   cp ../.env.example .env
-   # Edit .env sesuai kebutuhan
-   node src/init_db.js  # Initialize database
-   npm run dev
-   ```
+```powershell
+.\setup-local.ps1
+```
 
-3. **Setup Frontend (terminal baru):**
-   ```bash
-   cd frontend
-   npm install
-   cp .env.example .env
-   npm start
-   ```
+Script ini akan:
+- ✅ Install semua dependencies (backend & frontend)
+- ✅ Setup environment variables
+- ✅ Initialize database dengan sample data
+- ✅ Siap untuk development!
 
-4. **Access:**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5000
+Setelah setup, jalankan aplikasi:
 
-### Default Credentials
+```powershell
+.\start-dev.ps1
+```
+
+Script ini akan membuka 2 terminal:
+- Terminal 1: Backend server (port 5000)
+- Terminal 2: Frontend server (port 3000)
+
+### 📝 Manual Setup
+
+**1. Clone repository:**
+```powershell
+git clone https://github.com/raihan7913/sinfomik.git
+cd sinfomik
+```
+
+**2. Install Dependencies:**
+```powershell
+# Backend
+cd backend
+npm install
+
+# Frontend (terminal baru atau cd ../frontend)
+cd frontend
+npm install
+```
+
+**3. Environment Variables (sudah dibuat):**
+
+File `.env` sudah tersedia di:
+- `backend/.env` - Backend config
+- `frontend/.env` - Frontend config
+
+> Untuk production/Railway, edit JWT_SECRET dengan random 32 chars
+
+**4. Initialize Database:**
+```powershell
+cd backend
+node src/init_db.js
+```
+
+**5. Run Aplikasi:**
+
+Terminal 1 - Backend:
+```powershell
+cd backend
+npm run dev
+```
+
+Terminal 2 - Frontend:
+```powershell
+cd frontend
+npm start
+```
+
+**6. Access:**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000
+
+### 🔑 Default Credentials
 
 **Admin:**
 - Username: `admin`
 - Password: `admin123`
 
 **Guru:**
-- Username: `guru1` (atau nama guru lain)
+- Username: `guru1`
 - Password: `guru123`
+
+**Siswa:**
+- Username: `siswa1`
+- Password: `siswa123`
+
+### 📖 Dokumentasi Lengkap
+
+- 🚀 [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Command cheat sheet
+- 📘 [LOCAL_SETUP_GUIDE.md](LOCAL_SETUP_GUIDE.md) - Detailed setup & troubleshooting
+- 🚂 [RAILWAY_DEPLOYMENT_GUIDE.md](RAILWAY_DEPLOYMENT_GUIDE.md) - Deploy ke Railway
 
 **Siswa:**
 - Username: `siswa1` (atau NISN siswa)

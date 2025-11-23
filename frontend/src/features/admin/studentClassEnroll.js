@@ -16,7 +16,7 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAssigning, setIsAssigning] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async() => {
     setLoading(true);
     setError(null);
     try {
@@ -36,7 +36,7 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
     }
   };
 
-  const fetchStudentsInKelas = async (kelasId, taSemesterId) => {
+  const fetchStudentsInKelas = async(kelasId, taSemesterId) => {
     if (!kelasId || !taSemesterId) {
       setStudentsInSelectedKelas([]);
       return;
@@ -45,7 +45,7 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
       const data = await adminApi.getSiswaInKelas(kelasId, taSemesterId);
       setStudentsInSelectedKelas(data);
     } catch (err) {
-      console.error("Error fetching students in class:", err);
+      console.error('Error fetching students in class:', err);
       setStudentsInSelectedKelas([]);
     }
   };
@@ -61,7 +61,7 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
   const showMessage = (text, type = 'success') => {
     setMessage(text);
     setMessageType(type);
-    
+
     setTimeout(() => {
       setMessage('');
       setMessageType('');
@@ -86,11 +86,11 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
     }
   };
 
-  const handleAssignStudents = async () => {
+  const handleAssignStudents = async() => {
     setMessage('');
     setMessageType('');
     setIsAssigning(true);
-    
+
     if (!selectedKelasId || !activeTASemester || selectedStudents.length === 0) {
       showMessage('Please select a class and at least one student.', 'error');
       setIsAssigning(false);
@@ -106,13 +106,13 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
         id_kelas: selectedKelasId,
         id_ta_semester: activeTASemester.id_ta_semester
       })
-      .then(() => {
-        successCount++;
-      })
-      .catch(err => {
-        console.error(`Failed to assign student ${studentId}:`, err);
-        failCount++;
-      });
+        .then(() => {
+          successCount++;
+        })
+        .catch(err => {
+          console.error(`Failed to assign student ${studentId}:`, err);
+          failCount++;
+        });
     });
 
     try {
@@ -134,7 +134,7 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
     }
   };
 
-  const handleRemoveStudent = async (id_siswa, nama_siswa) => {
+  const handleRemoveStudent = async(id_siswa, nama_siswa) => {
     if (!window.confirm(`Are you sure you want to remove "${nama_siswa}" from this class?\n\nThis action will:\n• Remove student from class roster\n• Keep all existing grades\n• Student can be re-enrolled later`)) {
       return;
     }
@@ -167,19 +167,19 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
   const selectedClass = kelas.find(k => k.id_kelas === selectedKelasId);
 
   const renderStudentCard = (student, isSelected) => (
-    <div 
+    <div
       key={student.id_siswa}
       className={`relative bg-white rounded-xl border-2 p-4 cursor-pointer transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg ${
-        isSelected 
-          ? 'border-emerald-500 bg-emerald-50 shadow-lg' 
+        isSelected
+          ? 'border-emerald-500 bg-emerald-50 shadow-lg'
           : 'border-gray-200 hover:border-emerald-300'
       }`}
       onClick={() => handleCheckboxChange(student.id_siswa)}
     >
       <div className="flex items-center space-x-3">
         <div className={`relative w-10 h-10 rounded-full flex items-center justify-center ${
-          isSelected 
-            ? 'bg-emerald-500 text-white' 
+          isSelected
+            ? 'bg-emerald-500 text-white'
             : 'bg-gradient-to-br from-emerald-400 to-cyan-500 text-white'
         }`}>
           {isSelected ? (
@@ -204,18 +204,18 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
   );
 
   const renderStudentList = (student, isSelected) => (
-    <div 
+    <div
       key={student.id_siswa}
       className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ${
-        isSelected 
-          ? 'bg-emerald-50 border border-emerald-200' 
+        isSelected
+          ? 'bg-emerald-50 border border-emerald-200'
           : 'bg-white hover:bg-gray-50 border border-gray-200'
       }`}
       onClick={() => handleCheckboxChange(student.id_siswa)}
     >
       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-        isSelected 
-          ? 'bg-emerald-500 text-white' 
+        isSelected
+          ? 'bg-emerald-500 text-white'
           : 'bg-gradient-to-br from-emerald-400 to-cyan-500 text-white'
       }`}>
         {isSelected ? (
@@ -290,19 +290,19 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
           {/* Message Display */}
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : messageType === 'error'
-                ? 'bg-red-50 border-red-500 text-red-700'
-                : messageType === 'warning'
-                ? 'bg-yellow-50 border-yellow-500 text-yellow-700'
-                : 'bg-blue-50 border-blue-500 text-blue-700'
+                  ? 'bg-red-50 border-red-500 text-red-700'
+                  : messageType === 'warning'
+                    ? 'bg-yellow-50 border-yellow-500 text-yellow-700'
+                    : 'bg-blue-50 border-blue-500 text-blue-700'
             }`}>
               <i className={`fas ${
-                messageType === 'success' ? 'fa-check-circle' : 
-                messageType === 'error' ? 'fa-exclamation-circle' :
-                messageType === 'warning' ? 'fa-exclamation-triangle' :
-                'fa-info-circle'
+                messageType === 'success' ? 'fa-check-circle' :
+                  messageType === 'error' ? 'fa-exclamation-circle' :
+                    messageType === 'warning' ? 'fa-exclamation-triangle' :
+                      'fa-info-circle'
               } mr-2`}></i>
               {message}
             </div>
@@ -339,8 +339,8 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
                   Select Target Class
                 </h3>
                 <div className="relative">
-                  <select 
-                    value={selectedKelasId} 
+                  <select
+                    value={selectedKelasId}
                     onChange={(e) => setSelectedKelasId(parseInt(e.target.value))}
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none"
                   >
@@ -361,7 +361,7 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
                     {studentsInSelectedKelas.length}
                   </span>
                 </h3>
-                
+
                 {studentsInSelectedKelas.length > 0 ? (
                   <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
@@ -393,7 +393,7 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <button 
+                                <button
                                   onClick={() => handleRemoveStudent(s.id_siswa, s.nama_siswa)}
                                   className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200 transform hover:-translate-y-0.5"
                                 >
@@ -427,27 +427,27 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
                       {filteredAvailableStudents.length} available
                     </span>
                   </h3>
-                  
+
                   <div className="flex space-x-3 mt-3 md:mt-0">
                     <div className="relative">
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search students..." 
+                        placeholder="Search students..."
                         className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                       />
                       <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                     </div>
-                    
+
                     <div className="flex bg-gray-100 rounded-lg p-1">
-                      <button 
+                      <button
                         onClick={() => setViewMode('list')}
                         className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'list' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                       >
                         <i className="fas fa-list"></i>
                       </button>
-                      <button 
+                      <button
                         onClick={() => setViewMode('grid')}
                         className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'grid' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                       >
@@ -462,16 +462,16 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
                     {/* Select All & Action Buttons */}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-emerald-50 p-4 rounded-xl border border-emerald-200">
                       <div className="flex items-center space-x-4">
-                        <button 
+                        <button
                           onClick={handleSelectAll}
                           className="flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 transition-colors duration-200"
                         >
                           <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                             selectedStudents.length === filteredAvailableStudents.length && filteredAvailableStudents.length > 0
-                              ? 'bg-emerald-500 border-emerald-500' 
+                              ? 'bg-emerald-500 border-emerald-500'
                               : selectedStudents.length > 0
-                              ? 'bg-emerald-200 border-emerald-400'
-                              : 'border-gray-300'
+                                ? 'bg-emerald-200 border-emerald-400'
+                                : 'border-gray-300'
                           }`}>
                             {selectedStudents.length === filteredAvailableStudents.length && filteredAvailableStudents.length > 0 ? (
                               <i className="fas fa-check text-white text-xs"></i>
@@ -481,7 +481,7 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
                           </div>
                           <span className="font-medium">
                             {selectedStudents.length === filteredAvailableStudents.length && filteredAvailableStudents.length > 0
-                              ? 'Deselect All' 
+                              ? 'Deselect All'
                               : 'Select All'}
                           </span>
                         </button>
@@ -489,8 +489,8 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
                           {selectedStudents.length} of {filteredAvailableStudents.length} selected
                         </span>
                       </div>
-                      
-                      <button 
+
+                      <button
                         onClick={handleAssignStudents}
                         disabled={!activeTASemester || selectedStudents.length === 0 || isAssigning}
                         className="mt-3 sm:mt-0 flex items-center px-6 py-2 bg-gradient-to-r from-emerald-500 to-cyan-600 text-white rounded-lg hover:from-emerald-600 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:-translate-y-0.5 font-medium"
@@ -512,13 +512,13 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
                     {/* Students Display */}
                     {viewMode === 'grid' ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {filteredAvailableStudents.map(student => 
+                        {filteredAvailableStudents.map(student =>
                           renderStudentCard(student, selectedStudents.includes(student.id_siswa))
                         )}
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        {filteredAvailableStudents.map(student => 
+                        {filteredAvailableStudents.map(student =>
                           renderStudentList(student, selectedStudents.includes(student.id_siswa))
                         )}
                       </div>
@@ -533,7 +533,7 @@ const SiswaKelasAssignment = ({ activeTASemester }) => {
                       {searchTerm ? 'No Students Match Search' : 'All Students Enrolled'}
                     </h5>
                     <p className="text-gray-500">
-                      {searchTerm 
+                      {searchTerm
                         ? `No available students match your search for "${searchTerm}".`
                         : 'All students are already enrolled in this class or no students are available.'
                       }

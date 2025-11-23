@@ -16,7 +16,7 @@ function LoginPage({ onLogin }) {
     feather.replace();
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault(); // Mencegah refresh halaman
     setMessage(''); // Reset pesan
     setMessageType('');
@@ -186,4 +186,4 @@ function LoginPage({ onLogin }) {
   );
 }
 
-export default LoginPage;    
+export default LoginPage;

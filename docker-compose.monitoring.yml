@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  # Main Application
+  sinfomik:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sinfomik-app
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - JWT_SECRET=${JWT_SECRET:-change-this-secret-in-production-32-characters}
+      - JWT_EXPIRES_IN=24h
+      - FRONTEND_URL=http://localhost:5000
+      - RATE_LIMIT_WINDOW_MS=900000
+      - RATE_LIMIT_MAX_REQUESTS=500
+      - DB_PATH=/app/backend/data/academic_dashboard.db
+    volumes:
+      - sinfomik-data:/app/backend/data
+      - sinfomik-uploads:/app/backend/uploads
+    networks:
+      - sinfomik-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "prometheus-job=sinfomik"
+
+  # Prometheus - Metrics Collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sinfomik-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - sinfomik-network
+
+  # Grafana - Visualization Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sinfomik-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - sinfomik-network
+    depends_on:
+      - prometheus
+
+  # cAdvisor - Container Metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: sinfomik-cadvisor
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - sinfomik-network
+    privileged: true
+
+  # Node Exporter - System Metrics (Optional)
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: sinfomik-node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    networks:
+      - sinfomik-network
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+
+volumes:
+  sinfomik-data:
+    driver: local
+  sinfomik-uploads:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+networks:
+  sinfomik-network:
+    driver: bridge

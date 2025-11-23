@@ -26,7 +26,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 // ===============================
 // Railway menggunakan reverse proxy, harus trust proxy untuk rate limiter
 if (process.env.NODE_ENV === 'production') {
-    app.set('trust proxy', 1); // Trust first proxy
+  app.set('trust proxy', 1); // Trust first proxy
 }
 
 // ===============================
@@ -35,42 +35,42 @@ if (process.env.NODE_ENV === 'production') {
 
 // 1. Helmet - Set security HTTP headers
 app.use(helmet({
-    contentSecurityPolicy: false, // Disable untuk development, enable di production
-    crossOriginEmbedderPolicy: false
+  contentSecurityPolicy: false, // Disable untuk development, enable di production
+  crossOriginEmbedderPolicy: false
 }));
 
 // 2. CORS - Configure properly untuk specific origin
 // In production, if frontend is served from same domain, allow same origin
 // In development, allow localhost:3000
 const corsOptions = {
-    origin: process.env.NODE_ENV === 'production' 
-        ? [FRONTEND_URL, 'https://*.railway.app'] // Allow Railway domains
-        : ['http://localhost:3000', 'http://localhost:3001'], // Development
-    credentials: true,
-    exposedHeaders: ['Content-Disposition']
+  origin: process.env.NODE_ENV === 'production'
+    ? [FRONTEND_URL, 'https://*.railway.app'] // Allow Railway domains
+    : ['http://localhost:3000', 'http://localhost:3001'], // Development
+  credentials: true,
+  exposedHeaders: ['Content-Disposition']
 };
 
 app.use(cors(corsOptions));
 
 // 3. Rate Limiting - Prevent brute force attacks
 const limiter = rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 500, // Limit each IP to 500 requests per windowMs (development)
-    message: {
-        error: 'Too many requests',
-        message: 'Anda telah mencapai batas request. Silakan tunggu beberapa saat sebelum mencoba lagi.',
-        retryAfter: '15 menit'
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    handler: (req, res) => {
-        console.log(`⚠️  Rate limit exceeded for IP: ${req.ip}`);
-        res.status(429).json({
-            error: 'Too many requests',
-            message: 'Anda telah mencapai batas request. Silakan tunggu beberapa saat sebelum mencoba lagi.',
-            retryAfter: '15 menit'
-        });
-    }
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 500, // Limit each IP to 500 requests per windowMs (development)
+  message: {
+    error: 'Too many requests',
+    message: 'Anda telah mencapai batas request. Silakan tunggu beberapa saat sebelum mencoba lagi.',
+    retryAfter: '15 menit'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    console.log(`⚠️  Rate limit exceeded for IP: ${req.ip}`);
+    res.status(429).json({
+      error: 'Too many requests',
+      message: 'Anda telah mencapai batas request. Silakan tunggu beberapa saat sebelum mencoba lagi.',
+      retryAfter: '15 menit'
+    });
+  }
 });
 
 // Apply rate limiting to all routes
@@ -78,10 +78,10 @@ app.use(limiter);
 
 // Stricter rate limit for auth routes
 const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limit each IP to 5 login requests per windowMs
-    message: 'Too many login attempts, please try again after 15 minutes.',
-    skipSuccessfulRequests: true, // Don't count successful requests
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login requests per windowMs
+  message: 'Too many login attempts, please try again after 15 minutes.',
+  skipSuccessfulRequests: true // Don't count successful requests
 });
 
 // 4. Body parser with size limits
@@ -108,66 +108,66 @@ app.use('/api/analytics', analyticsRoutes);
 
 // Health check endpoint (before static files)
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // API routes check
 app.get('/api', (req, res) => {
-    res.json({ 
-        message: 'API Sistem Manajemen Akademik Berjalan!',
-        version: '1.0.0',
-        security: 'hardened',
-        status: 'healthy'
-    });
+  res.json({
+    message: 'API Sistem Manajemen Akademik Berjalan!',
+    version: '1.0.0',
+    security: 'hardened',
+    status: 'healthy'
+  });
 });
 
 // ===============================
 // SERVE FRONTEND IN PRODUCTION
 // ===============================
 if (process.env.NODE_ENV === 'production') {
-    // Serve static files from React build
-    const frontendBuildPath = path.join(__dirname, '../../frontend/build');
-    app.use(express.static(frontendBuildPath));
-    
-    // Handle React routing - return index.html for all non-API routes
-    app.get('*', (req, res) => {
-        // Skip if it's an API route
-        if (req.path.startsWith('/api/')) {
-            return res.status(404).json({ message: 'API endpoint not found' });
-        }
-        res.sendFile(path.join(frontendBuildPath, 'index.html'));
-    });
+  // Serve static files from React build
+  const frontendBuildPath = path.join(__dirname, '../../frontend/build');
+  app.use(express.static(frontendBuildPath));
+
+  // Handle React routing - return index.html for all non-API routes
+  app.get('*', (req, res) => {
+    // Skip if it's an API route
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ message: 'API endpoint not found' });
+    }
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
+  });
 } else {
-    // Development mode - just return API info
-    app.get('/', (req, res) => {
-        res.json({ 
-            message: 'API Sistem Manajemen Akademik Berjalan!',
-            version: '1.0.0',
-            security: 'hardened',
-            status: 'healthy',
-            mode: 'development'
-        });
+  // Development mode - just return API info
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'API Sistem Manajemen Akademik Berjalan!',
+      version: '1.0.0',
+      security: 'hardened',
+      status: 'healthy',
+      mode: 'development'
     });
-    
-    // 404 handler for development
-    app.use((req, res) => {
-        res.status(404).json({ message: 'Endpoint not found' });
-    });
+  });
+
+  // 404 handler for development
+  app.use((req, res) => {
+    res.status(404).json({ message: 'Endpoint not found' });
+  });
 }
 
 // Error handler
 app.use((err, req, res, next) => {
-    console.error('Error:', err.stack);
-    res.status(err.status || 500).json({ 
-        message: err.message || 'Internal Server Error',
-        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-    });
+  console.error('Error:', err.stack);
+  res.status(err.status || 500).json({
+    message: err.message || 'Internal Server Error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
 });
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`\n🚀 Server berjalan di http://localhost:${PORT}`);
-    console.log(`🔒 Security: ENABLED (Helmet, Rate Limit, CORS)`);
-    console.log(`🌐 Frontend URL: ${FRONTEND_URL}`);
-    console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}\n`);
+  console.log(`\n🚀 Server berjalan di http://localhost:${PORT}`);
+  console.log('🔒 Security: ENABLED (Helmet, Rate Limit, CORS)');
+  console.log(`🌐 Frontend URL: ${FRONTEND_URL}`);
+  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}\n`);
 });

@@ -13,20 +13,20 @@ const EditKelasModal = ({ kelas, onClose, onSave, teachers }) => {
     setEditedKelas(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
     try {
       const dataToUpdate = {
         nama_kelas: editedKelas.nama_kelas,
-        id_wali_kelas: editedKelas.id_wali_kelas || null,
+        id_wali_kelas: editedKelas.id_wali_kelas || null
       };
-      
+
       const response = await adminApi.updateKelas(editedKelas.id_kelas, dataToUpdate);
       setMessage(response.message);
       setMessageType('success');
-      
+
       // Show success message then close modal after delay
       setTimeout(() => {
         onSave();
@@ -49,7 +49,7 @@ const EditKelasModal = ({ kelas, onClose, onSave, teachers }) => {
                 Edit Class
               </span>
             </h3>
-            <button 
+            <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-2 hover:bg-gray-100 rounded-full"
             >
@@ -58,8 +58,8 @@ const EditKelasModal = ({ kelas, onClose, onSave, teachers }) => {
           </div>
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -150,7 +150,7 @@ const KelasManagement = ({ activeTASemester }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSemester, setFilterSemester] = useState('all');
 
-  const fetchKelasAndTeachers = async () => {
+  const fetchKelasAndTeachers = async() => {
     setLoading(true);
     setError(null);
     try {
@@ -176,7 +176,7 @@ const KelasManagement = ({ activeTASemester }) => {
   const showMessage = (text, type = 'success') => {
     setMessage(text);
     setMessageType(type);
-    
+
     // Hide message after 5 seconds
     setTimeout(() => {
       setMessage('');
@@ -184,11 +184,11 @@ const KelasManagement = ({ activeTASemester }) => {
     }, 5000);
   };
 
-  const handleAddKelas = async (e) => {
+  const handleAddKelas = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
-    
+
     if (!activeTASemester) {
       showMessage('Harap atur Tahun Ajaran & Semester aktif terlebih dahulu.', 'error');
       return;
@@ -216,7 +216,7 @@ const KelasManagement = ({ activeTASemester }) => {
     setShowEditModal(true);
   };
 
-  const handleDeleteClick = async (id_kelas, nama_kelas) => {
+  const handleDeleteClick = async(id_kelas, nama_kelas) => {
     if (window.confirm(`Apakah Anda yakin ingin menghapus kelas ${nama_kelas} (ID: ${id_kelas})? Tindakan ini tidak dapat dibatalkan.`)) {
       try {
         const response = await adminApi.deleteKelas(id_kelas);
@@ -243,12 +243,12 @@ const KelasManagement = ({ activeTASemester }) => {
 
   // Get current time
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
-  
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString());
     }, 1000);
-    
+
     return () => clearInterval(timer);
   }, []);
 
@@ -295,7 +295,7 @@ const KelasManagement = ({ activeTASemester }) => {
                 <p className="text-emerald-100 mt-2">Manage classes and homeroom teachers efficiently</p>
               </div>
               <div className="flex space-x-2">
-                <button 
+                <button
                   onClick={fetchKelasAndTeachers}
                   className="p-3 rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors duration-200"
                 >
@@ -308,18 +308,18 @@ const KelasManagement = ({ activeTASemester }) => {
           {/* Message Display */}
           {message && (
             <div className={`p-4 mb-6 rounded-lg border-l-4 flex items-center transition-all duration-300 relative overflow-hidden ${
-              messageType === 'success' 
-                ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-500 text-green-700'
                 : messageType === 'error'
-                ? 'bg-gradient-to-r from-red-50 to-red-100 border-red-500 text-red-700'
-                : messageType === 'warning'
-                ? 'bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-500 text-yellow-700'
-                : 'bg-gradient-to-r from-blue-50 to-blue-100 border-blue-500 text-blue-700'
+                  ? 'bg-gradient-to-r from-red-50 to-red-100 border-red-500 text-red-700'
+                  : messageType === 'warning'
+                    ? 'bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-500 text-yellow-700'
+                    : 'bg-gradient-to-r from-blue-50 to-blue-100 border-blue-500 text-blue-700'
             }`}>
               <i className={`fas ${
-                messageType === 'success' ? 'fa-check-circle' : 
-                messageType === 'error' ? 'fa-exclamation-circle' :
-                messageType === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'
+                messageType === 'success' ? 'fa-check-circle' :
+                  messageType === 'error' ? 'fa-exclamation-circle' :
+                    messageType === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'
               } mr-2`}></i>
               {message}
             </div>
@@ -360,7 +360,7 @@ const KelasManagement = ({ activeTASemester }) => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-gradient-to-r from-blue-400 to-indigo-400 rounded-xl p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>
@@ -372,7 +372,7 @@ const KelasManagement = ({ activeTASemester }) => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-gradient-to-r from-orange-400 to-red-400 rounded-xl p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>
@@ -410,10 +410,10 @@ const KelasManagement = ({ activeTASemester }) => {
                       Class Name
                     </label>
                   </div>
-                  
+
                   <div className="relative">
-                    <select 
-                      value={selectedWaliKelas} 
+                    <select
+                      value={selectedWaliKelas}
                       onChange={(e) => setSelectedWaliKelas(e.target.value)}
                       className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 peer appearance-none"
                     >
@@ -427,9 +427,9 @@ const KelasManagement = ({ activeTASemester }) => {
                     </label>
                   </div>
                 </div>
-                
-                <button 
-                  type="submit" 
+
+                <button
+                  type="submit"
                   disabled={!activeTASemester}
                   className="w-full md:w-auto flex items-center justify-center px-8 py-3 bg-gradient-to-r from-emerald-500 to-cyan-600 text-white rounded-lg hover:from-emerald-600 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:-translate-y-0.5 font-semibold shadow-lg"
                 >
@@ -449,21 +449,21 @@ const KelasManagement = ({ activeTASemester }) => {
                   Class Directory
                 </span>
               </h2>
-              
+
               <div className="flex space-x-3 mt-3 md:mt-0">
                 <div className="relative">
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search classes..." 
+                    placeholder="Search classes..."
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   />
                   <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                 </div>
               </div>
             </div>
-            
+
             {filteredKelas.length > 0 ? (
               <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm bg-white">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -501,14 +501,14 @@ const KelasManagement = ({ activeTASemester }) => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
-                            <button 
-                              onClick={() => handleEditClick(k)} 
+                            <button
+                              onClick={() => handleEditClick(k)}
                               className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all duration-200 transform hover:-translate-y-0.5"
                             >
                               <i className="fas fa-edit mr-1"></i> Edit
                             </button>
-                            <button 
-                              onClick={() => handleDeleteClick(k.id_kelas, k.nama_kelas)} 
+                            <button
+                              onClick={() => handleDeleteClick(k.id_kelas, k.nama_kelas)}
                               className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200 transform hover:-translate-y-0.5"
                             >
                               <i className="fas fa-trash-alt mr-1"></i> Delete
@@ -529,7 +529,7 @@ const KelasManagement = ({ activeTASemester }) => {
                   {searchTerm ? 'No Classes Match Search' : 'No Classes Found'}
                 </h5>
                 <p className="text-gray-500 max-w-md mx-auto">
-                  {searchTerm 
+                  {searchTerm
                     ? `No classes match your search for "${searchTerm}".`
                     : 'No classes are registered for the active academic term.'
                   }

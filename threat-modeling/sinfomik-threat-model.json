@@ -1,0 +1,328 @@
+{
+  "summary": {
+    "title": "Sinfomik - Academic Management System",
+    "owner": "Development Team",
+    "description": "Web-based academic management system for managing students, teachers, grades, and analytics",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "id": 0,
+        "title": "System Architecture",
+        "diagramType": "STRIDE",
+        "placeholder": "System architecture diagram",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.2.0",
+        "cells": [
+          {
+            "position": { "x": 100, "y": 80 },
+            "size": { "width": 100, "height": 80 },
+            "shape": "actor",
+            "id": "admin-user",
+            "zIndex": 1,
+            "data": {
+              "type": "tm.Actor",
+              "name": "Admin User",
+              "description": "System administrator",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": []
+            }
+          },
+          {
+            "position": { "x": 100, "y": 200 },
+            "size": { "width": 100, "height": 80 },
+            "shape": "actor",
+            "id": "teacher-user",
+            "zIndex": 1,
+            "data": {
+              "type": "tm.Actor",
+              "name": "Teacher User",
+              "description": "Teacher managing classes and grades",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": []
+            }
+          },
+          {
+            "position": { "x": 100, "y": 320 },
+            "size": { "width": 100, "height": 80 },
+            "shape": "actor",
+            "id": "student-user",
+            "zIndex": 1,
+            "data": {
+              "type": "tm.Actor",
+              "name": "Student User",
+              "description": "Student viewing grades",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": []
+            }
+          },
+          {
+            "position": { "x": 350, "y": 150 },
+            "size": { "width": 120, "height": 100 },
+            "shape": "process",
+            "id": "frontend",
+            "zIndex": 1,
+            "data": {
+              "type": "tm.Process",
+              "name": "React Frontend",
+              "description": "React 18 PWA application",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "privilegeLevel": "User",
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "id": "threat-1",
+                  "title": "XSS Attack via User Input",
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "Attacker injects malicious JavaScript through input fields",
+                  "mitigation": "React automatically escapes content, Helmet.js content security policy",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 1,
+                  "score": ""
+                },
+                {
+                  "id": "threat-2",
+                  "title": "JWT Token Theft from localStorage",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Information Disclosure",
+                  "description": "Attacker steals JWT token from browser localStorage",
+                  "mitigation": "Implement HTTPOnly cookies (recommended), Token expiration (24h)",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 2,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": { "x": 600, "y": 150 },
+            "size": { "width": 120, "height": 100 },
+            "shape": "process",
+            "id": "backend",
+            "zIndex": 1,
+            "data": {
+              "type": "tm.Process",
+              "name": "Express Backend",
+              "description": "Node.js + Express API Server",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "privilegeLevel": "System",
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "id": "threat-3",
+                  "title": "SQL Injection",
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "SQL injection through API endpoints",
+                  "mitigation": "Parameterized queries, express-validator input validation",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 3,
+                  "score": ""
+                },
+                {
+                  "id": "threat-4",
+                  "title": "Authentication Bypass",
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "type": "Spoofing",
+                  "description": "Unauthorized access without valid credentials",
+                  "mitigation": "JWT authentication, bcrypt password hashing, authMiddleware",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 4,
+                  "score": ""
+                },
+                {
+                  "id": "threat-5",
+                  "title": "DoS Attack via API Flooding",
+                  "status": "Mitigated",
+                  "severity": "Medium",
+                  "type": "Denial of Service",
+                  "description": "Excessive requests overwhelm server",
+                  "mitigation": "express-rate-limit: 100 requests per 15 minutes",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 5,
+                  "score": ""
+                },
+                {
+                  "id": "threat-6",
+                  "title": "Elevation of Privilege",
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "type": "Elevation of Privilege",
+                  "description": "Teacher accessing admin functions",
+                  "mitigation": "Role-based access control, permission middleware",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 6,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": { "x": 850, "y": 180 },
+            "size": { "width": 120, "height": 80 },
+            "shape": "store",
+            "id": "database",
+            "zIndex": 1,
+            "data": {
+              "type": "tm.Store",
+              "name": "SQLite Database",
+              "description": "academic_dashboard.db",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "isALog": false,
+              "storesCredentials": true,
+              "isEncrypted": false,
+              "isSigned": false,
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "id": "threat-7",
+                  "title": "Database File Exposure",
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "type": "Information Disclosure",
+                  "description": "Unauthorized access to SQLite database file",
+                  "mitigation": "File permissions, not in public directory, .gitignore",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 7,
+                  "score": ""
+                },
+                {
+                  "id": "threat-8",
+                  "title": "Password Exposure",
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "type": "Information Disclosure",
+                  "description": "Passwords stored in plaintext",
+                  "mitigation": "bcrypt hashing with salt",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 8,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "shape": "flow",
+            "id": "flow-1",
+            "zIndex": 10,
+            "source": { "id": "admin-user" },
+            "target": { "id": "frontend" },
+            "data": {
+              "type": "tm.Flow",
+              "name": "HTTPS Request",
+              "description": "Login and API requests",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "protocol": "HTTPS",
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "hasOpenThreats": false,
+              "threats": []
+            }
+          },
+          {
+            "shape": "flow",
+            "id": "flow-2",
+            "zIndex": 10,
+            "source": { "id": "teacher-user" },
+            "target": { "id": "frontend" },
+            "data": {
+              "type": "tm.Flow",
+              "name": "HTTPS Request",
+              "description": "Grade management",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "protocol": "HTTPS",
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "hasOpenThreats": false,
+              "threats": []
+            }
+          },
+          {
+            "shape": "flow",
+            "id": "flow-3",
+            "zIndex": 10,
+            "source": { "id": "student-user" },
+            "target": { "id": "frontend" },
+            "data": {
+              "type": "tm.Flow",
+              "name": "HTTPS Request",
+              "description": "View grades",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "protocol": "HTTPS",
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "hasOpenThreats": false,
+              "threats": []
+            }
+          },
+          {
+            "shape": "flow",
+            "id": "flow-4",
+            "zIndex": 10,
+            "source": { "id": "frontend" },
+            "target": { "id": "backend" },
+            "data": {
+              "type": "tm.Flow",
+              "name": "REST API",
+              "description": "JSON API calls with JWT",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "protocol": "HTTP",
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "hasOpenThreats": false,
+              "threats": []
+            }
+          },
+          {
+            "shape": "flow",
+            "id": "flow-5",
+            "zIndex": 10,
+            "source": { "id": "backend" },
+            "target": { "id": "database" },
+            "data": {
+              "type": "tm.Flow",
+              "name": "SQL Queries",
+              "description": "Parameterized SQL queries",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "protocol": "SQL",
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "hasOpenThreats": false,
+              "threats": []
+            }
+          }
+        ]
+      }
+    ],
+    "reviewer": "Security Team"
+  }
+}

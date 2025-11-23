@@ -10,7 +10,7 @@ const PenilaianCapaianPembelajaran = ({ activeTASemester, userId }) => {
   const [capaianPembelajaran, setCapaianPembelajaran] = useState([]); // CP untuk mapel terpilih
   const [siswaCapaianStatus, setSiswaCapaianStatus] = useState({}); // {siswaId_cpId: status}
   const [siswaCapaianCatatan, setSiswaCapaianCatatan] = useState({}); // {siswaId_cpId: catatan}
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState('');
@@ -18,12 +18,12 @@ const PenilaianCapaianPembelajaran = ({ activeTASemester, userId }) => {
 
   const statusOptions = ['Tercapai', 'Belum Tercapai', 'Perlu Bimbingan', 'Sangat Baik'];
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async() => {
     setLoading(true);
     setError(null);
     try {
       if (!userId || !activeTASemester) {
-        setError("Informasi guru atau tahun ajaran aktif tidak tersedia.");
+        setError('Informasi guru atau tahun ajaran aktif tidak tersedia.');
         return;
       }
       const assignmentsData = await guruApi.getGuruAssignments(userId, activeTASemester.id_ta_semester);
@@ -39,7 +39,7 @@ const PenilaianCapaianPembelajaran = ({ activeTASemester, userId }) => {
     }
   }, [activeTASemester, userId, selectedAssignment]);
 
-  const fetchCpsAndStudentsStatus = useCallback(async () => {
+  const fetchCpsAndStudentsStatus = useCallback(async() => {
     if (selectedAssignment && activeTASemester && userId) {
       const [kelasId, mapelId] = selectedAssignment.split('-').map(Number);
       try {
@@ -100,7 +100,7 @@ const PenilaianCapaianPembelajaran = ({ activeTASemester, userId }) => {
     }));
   };
 
-  const handleSubmitCapaian = async (e) => {
+  const handleSubmitCapaian = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
@@ -131,11 +131,11 @@ const PenilaianCapaianPembelajaran = ({ activeTASemester, userId }) => {
               status_capaian: status,
               catatan: catatan || ''
             })
-            .then(() => { successCount++; })
-            .catch(err => {
-              console.error(`Gagal menyimpan CP untuk ${student.nama_siswa} (${cp.fase}):`, err);
-              failCount++;
-            })
+              .then(() => { successCount++; })
+              .catch(err => {
+                console.error(`Gagal menyimpan CP untuk ${student.nama_siswa} (${cp.fase}):`, err);
+                failCount++;
+              })
           );
         }
       });
@@ -204,7 +204,7 @@ const PenilaianCapaianPembelajaran = ({ activeTASemester, userId }) => {
                     </div>
                   ))}
                 </div>
-                
+
                 {studentsInClass.map(student => (
                   <div key={student.id_siswa} className="grades-grid-row cp-grid-row"> {/* Setiap baris siswa adalah baris grid */}
                     <div className="grid-cell-item student-name">{student.nama_siswa}</div>

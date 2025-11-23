@@ -6,14 +6,14 @@
 // In development, set REACT_APP_API_BASE_URL=http://localhost:5000 in .env
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
-export const loginUser = async (username, password, userType) => {
+export const loginUser = async(username, password, userType) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ username, password, user_type: userType }),
+      body: JSON.stringify({ username, password, user_type: userType })
     });
 
     const data = await response.json();
@@ -25,7 +25,7 @@ export const loginUser = async (username, password, userType) => {
         localStorage.setItem('user', JSON.stringify(data.user));
         console.log('✅ Token stored successfully');
       }
-      
+
       return { success: true, message: data.message, user: data.user, token: data.token };
     } else { // Status kode 4xx atau 5xx
       return { success: false, message: data.message || 'Login gagal.' };

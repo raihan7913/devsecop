@@ -13,7 +13,7 @@ const EditStudentModal = ({ student, onClose, onSave }) => {
     setEditedStudent(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
@@ -26,11 +26,11 @@ const EditStudentModal = ({ student, onClose, onSave }) => {
         // Password hanya dikirim jika diisi
         ...(editedStudent.password && { password: editedStudent.password })
       };
-      
+
       const response = await adminApi.updateStudent(editedStudent.id_siswa, dataToUpdate);
       setMessage(response.message);
       setMessageType('success');
-      
+
       // Show success message then close modal
       setTimeout(() => {
         onSave(); // Refresh data di parent
@@ -51,25 +51,25 @@ const EditStudentModal = ({ student, onClose, onSave }) => {
             <i className="fas fa-times"></i>
           </button>
         </div>
-        
+
         {message && (
           <div className={`mb-4 p-3 rounded ${
-            messageType === 'success' 
-              ? 'bg-green-100 border-l-4 border-green-500 text-green-700' 
+            messageType === 'success'
+              ? 'bg-green-100 border-l-4 border-green-500 text-green-700'
               : 'bg-red-100 border-l-4 border-red-500 text-red-700'
           }`}>
             <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
             {message}
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Student ID (Cannot be changed)</label>
-            <input 
-              type="text" 
-              value={editedStudent.id_siswa} 
-              disabled 
+            <input
+              type="text"
+              value={editedStudent.id_siswa}
+              disabled
               className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
             />
           </div>
@@ -96,9 +96,9 @@ const EditStudentModal = ({ student, onClose, onSave }) => {
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-            <select 
-              name="jenis_kelamin" 
-              value={editedStudent.jenis_kelamin} 
+            <select
+              name="jenis_kelamin"
+              value={editedStudent.jenis_kelamin}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             >
@@ -118,15 +118,15 @@ const EditStudentModal = ({ student, onClose, onSave }) => {
             />
           </div>
           <div className="flex justify-end space-x-3 mt-6">
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Cancel
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Save Changes
@@ -154,7 +154,7 @@ const StudentManagement = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const fetchStudents = async () => {
+  const fetchStudents = async() => {
     setLoading(true);
     setError(null);
     try {
@@ -174,7 +174,7 @@ const StudentManagement = () => {
   const showMessage = (text, type = 'success') => {
     setMessage(text);
     setMessageType(type);
-    
+
     // Hide message after 5 seconds
     setTimeout(() => {
       setMessage('');
@@ -182,16 +182,16 @@ const StudentManagement = () => {
     }, 5000);
   };
 
-  const handleAddStudent = async (e) => {
+  const handleAddStudent = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
-    
+
     if (!newStudent.id_siswa.trim()) {
       showMessage('Student ID must be filled', 'error');
       return;
     }
-    
+
     try {
       const response = await adminApi.addStudent(newStudent);
       showMessage(response.message);
@@ -213,7 +213,7 @@ const StudentManagement = () => {
     setShowEditModal(true);
   };
 
-  const handleDeleteClick = async (id_siswa, nama_siswa) => {
+  const handleDeleteClick = async(id_siswa, nama_siswa) => {
     if (window.confirm(`Are you sure you want to delete student ${nama_siswa} (ID: ${id_siswa})? This action cannot be undone.`)) {
       setMessage('');
       setMessageType('');
@@ -233,19 +233,19 @@ const StudentManagement = () => {
         <h1 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
           <i className="fas fa-user-graduate mr-2 text-blue-600"></i> Manajemen Siswa
         </h1>
-        
+
         {/* Message Display */}
         {message && (
           <div className={`mb-6 p-4 rounded transition-all duration-300 ease-in-out ${
-            messageType === 'success' 
-              ? 'bg-green-100 border-l-4 border-green-500 text-green-700' 
+            messageType === 'success'
+              ? 'bg-green-100 border-l-4 border-green-500 text-green-700'
               : 'bg-red-100 border-l-4 border-red-500 text-red-700'
           }`}>
             <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
             {message}
           </div>
         )}
-        
+
         {/* Add Student Form */}
         <div className="mb-10">
           <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
@@ -254,8 +254,8 @@ const StudentManagement = () => {
           <form onSubmit={handleAddStudent} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">ID Siswa (NISN)</label>
-              <input 
-                type="number" 
+              <input
+                type="number"
                 value={newStudent.id_siswa}
                 onChange={(e) => setNewStudent({ ...newStudent, id_siswa: e.target.value })}
                 required
@@ -265,8 +265,8 @@ const StudentManagement = () => {
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Nama Siswa</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={newStudent.nama_siswa}
                 onChange={(e) => setNewStudent({ ...newStudent, nama_siswa: e.target.value })}
                 required
@@ -276,8 +276,8 @@ const StudentManagement = () => {
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 value={newStudent.tanggal_lahir}
                 onChange={(e) => setNewStudent({ ...newStudent, tanggal_lahir: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -285,8 +285,8 @@ const StudentManagement = () => {
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-              <select 
-                value={newStudent.jenis_kelamin} 
+              <select
+                value={newStudent.jenis_kelamin}
                 onChange={(e) => setNewStudent({ ...newStudent, jenis_kelamin: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               >
@@ -296,8 +296,8 @@ const StudentManagement = () => {
             </div>
             <div className="space-y-2 md:col-span-2">
               <label className="block text-sm font-medium text-gray-700">Password</label>
-              <input 
-                type="password" 
+              <input
+                type="password"
                 value={newStudent.password}
                 onChange={(e) => setNewStudent({ ...newStudent, password: e.target.value })}
                 required
@@ -305,7 +305,7 @@ const StudentManagement = () => {
               />
             </div>
             <div className="md:col-span-2">
-              <button 
+              <button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
@@ -314,34 +314,34 @@ const StudentManagement = () => {
             </div>
           </form>
         </div>
-        
+
         {/* Student List */}
         <div>
           <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
             <i className="fas fa-list mr-2 text-purple-600"></i> Student List
           </h2>
-          
+
           {loading && (
             <div className="text-center py-8">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
               <p className="mt-2 text-gray-600">Loading students...</p>
             </div>
           )}
-          
+
           {error && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
               <i className="fas fa-exclamation-circle mr-2"></i>
               Error: {error}
             </div>
           )}
-          
+
           {!loading && !error && students.length === 0 && (
             <div className="text-center py-8">
               <i className="fas fa-user-times text-4xl text-gray-400 mb-3"></i>
               <p className="text-gray-600">No students registered yet.</p>
             </div>
           )}
-          
+
           {!loading && !error && students.length > 0 && (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
@@ -362,22 +362,22 @@ const StudentManagement = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.tanggal_lahir || '-'}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <span className={`px-2 py-1 text-xs font-medium rounded ${
-                          student.jenis_kelamin === 'L' 
-                            ? 'bg-blue-100 text-blue-800' 
+                          student.jenis_kelamin === 'L'
+                            ? 'bg-blue-100 text-blue-800'
                             : 'bg-pink-100 text-pink-800'
                         }`}>
                           {student.jenis_kelamin === 'L' ? 'Male' : 'Female'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button 
-                          onClick={() => handleEditClick(student)} 
+                        <button
+                          onClick={() => handleEditClick(student)}
                           className="text-indigo-600 hover:text-indigo-900 mr-3 transition-colors duration-200"
                         >
                           <i className="fas fa-edit mr-1"></i>Edit
                         </button>
-                        <button 
-                          onClick={() => handleDeleteClick(student.id_siswa, student.nama_siswa)} 
+                        <button
+                          onClick={() => handleDeleteClick(student.id_siswa, student.nama_siswa)}
                           className="text-red-600 hover:text-red-900 transition-colors duration-200"
                         >
                           <i className="fas fa-trash-alt mr-1"></i>Delete

@@ -2,16 +2,16 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./database.db');
 
 console.log('=== Checking tables ===');
-db.all(`SELECT name FROM sqlite_master WHERE type='table'`, [], (err, tables) => {
-    if (err) {
-        console.error('Error getting tables:', err);
-        return;
-    }
-    console.log('Available tables:', tables);
-    
-    // Try to get student 1001 data
-    console.log('\n=== Checking student 1001 data ===');
-    const query = `
+db.all('SELECT name FROM sqlite_master WHERE type=\'table\'', [], (err, tables) => {
+  if (err) {
+    console.error('Error getting tables:', err);
+    return;
+  }
+  console.log('Available tables:', tables);
+
+  // Try to get student 1001 data
+  console.log('\n=== Checking student 1001 data ===');
+  const query = `
         SELECT 
             n.*,
             m.nama_mapel,
@@ -26,18 +26,18 @@ db.all(`SELECT name FROM sqlite_master WHERE type='table'`, [], (err, tables) =>
         ORDER BY tas.tahun_ajaran, tas.semester, m.nama_mapel
         LIMIT 20
     `;
-    
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            console.error('Error getting student data:', err);
-        } else {
-            console.log(`Found ${rows.length} records for student 1001:`);
-            console.log(JSON.stringify(rows, null, 2));
-        }
-        
-        // Check aggregated data like the API returns
-        console.log('\n=== Checking aggregated data (like API) ===');
-        const aggQuery = `
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error('Error getting student data:', err);
+    } else {
+      console.log(`Found ${rows.length} records for student 1001:`);
+      console.log(JSON.stringify(rows, null, 2));
+    }
+
+    // Check aggregated data like the API returns
+    console.log('\n=== Checking aggregated data (like API) ===');
+    const aggQuery = `
             SELECT 
                 s.id_siswa,
                 s.nama_siswa,
@@ -60,15 +60,15 @@ db.all(`SELECT name FROM sqlite_master WHERE type='table'`, [], (err, tables) =>
             GROUP BY m.id_mapel, tas.id_ta_semester
             ORDER BY tas.tahun_ajaran, tas.semester, m.nama_mapel
         `;
-        
-        db.all(aggQuery, [], (err, aggRows) => {
-            if (err) {
-                console.error('Error getting aggregated data:', err);
-            } else {
-                console.log(`Found ${aggRows.length} aggregated records:`);
-                console.log(JSON.stringify(aggRows, null, 2));
-            }
-            db.close();
-        });
+
+    db.all(aggQuery, [], (err, aggRows) => {
+      if (err) {
+        console.error('Error getting aggregated data:', err);
+      } else {
+        console.log(`Found ${aggRows.length} aggregated records:`);
+        console.log(JSON.stringify(aggRows, null, 2));
+      }
+      db.close();
     });
+  });
 });

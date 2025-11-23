@@ -13,7 +13,7 @@ const EditTipeNilaiModal = ({ tipe, onClose, onSave }) => {
     setEditedTipe(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
@@ -45,7 +45,7 @@ const EditTipeNilaiModal = ({ tipe, onClose, onSave }) => {
                 Edit Grade Type
               </span>
             </h3>
-            <button 
+            <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-2 hover:bg-gray-100 rounded-full"
             >
@@ -55,8 +55,8 @@ const EditTipeNilaiModal = ({ tipe, onClose, onSave }) => {
 
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -143,7 +143,7 @@ const TipeNilaiManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'card'
 
-  const fetchTipeNilai = async () => {
+  const fetchTipeNilai = async() => {
     setLoading(true);
     setError(null);
     try {
@@ -163,18 +163,18 @@ const TipeNilaiManagement = () => {
   const showMessage = (text, type = 'success') => {
     setMessage(text);
     setMessageType(type);
-    
+
     setTimeout(() => {
       setMessage('');
       setMessageType('');
     }, 5000);
   };
 
-  const handleAddTipeNilai = async (e) => {
+  const handleAddTipeNilai = async(e) => {
     e.preventDefault();
     setMessage('');
     setMessageType('');
-    
+
     if (!newTipeName.trim()) {
       showMessage('Grade type name must be filled', 'error');
       return;
@@ -199,7 +199,7 @@ const TipeNilaiManagement = () => {
     setShowEditModal(true);
   };
 
-  const handleDeleteClick = async (id_tipe_nilai, nama_tipe) => {
+  const handleDeleteClick = async(id_tipe_nilai, nama_tipe) => {
     if (window.confirm(`Are you sure you want to delete grade type "${nama_tipe}" (ID: ${id_tipe_nilai})? This action cannot be undone.`)) {
       try {
         const response = await adminApi.deleteTipeNilai(id_tipe_nilai);
@@ -212,7 +212,7 @@ const TipeNilaiManagement = () => {
   };
 
   // Filter grade types based on search term
-  const filteredTipeNilai = tipeNilai.filter(tipe => 
+  const filteredTipeNilai = tipeNilai.filter(tipe =>
     tipe.nama_tipe.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (tipe.deskripsi && tipe.deskripsi.toLowerCase().includes(searchTerm.toLowerCase()))
   );
@@ -236,14 +236,14 @@ const TipeNilaiManagement = () => {
               <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{tipe.deskripsi || '-'}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <div className="flex space-x-2">
-                  <button 
-                    onClick={() => handleEditClick(tipe)} 
+                  <button
+                    onClick={() => handleEditClick(tipe)}
                     className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all duration-200 transform hover:-translate-y-0.5"
                   >
                     <i className="fas fa-edit mr-1"></i> Edit
                   </button>
-                  <button 
-                    onClick={() => handleDeleteClick(tipe.id_tipe_nilai, tipe.nama_tipe)} 
+                  <button
+                    onClick={() => handleDeleteClick(tipe.id_tipe_nilai, tipe.nama_tipe)}
                     className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200 transform hover:-translate-y-0.5"
                   >
                     <i className="fas fa-trash-alt mr-1"></i> Delete
@@ -277,13 +277,13 @@ const TipeNilaiManagement = () => {
               </p>
             </div>
             <div className="flex space-x-2 pt-2">
-              <button 
+              <button
                 onClick={() => handleEditClick(tipe)}
                 className="flex-1 py-2 px-3 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-all duration-200 transform hover:-translate-y-0.5 text-sm font-medium"
               >
                 <i className="fas fa-edit mr-1"></i> Edit
               </button>
-              <button 
+              <button
                 onClick={() => handleDeleteClick(tipe.id_tipe_nilai, tipe.nama_tipe)}
                 className="flex-1 py-2 px-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all duration-200 transform hover:-translate-y-0.5 text-sm font-medium"
               >
@@ -311,7 +311,7 @@ const TipeNilaiManagement = () => {
                 <p className="text-emerald-100 mt-2">Manage grade types and assessment categories</p>
               </div>
               <div className="flex space-x-2">
-                <button 
+                <button
                   onClick={fetchTipeNilai}
                   className="p-3 rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors duration-200"
                 >
@@ -324,8 +324,8 @@ const TipeNilaiManagement = () => {
           {/* Message Display */}
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -416,23 +416,23 @@ const TipeNilaiManagement = () => {
                   </h2>
                   <div className="flex space-x-3 mt-3 md:mt-0">
                     <div className="relative">
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search grade types..." 
+                        placeholder="Search grade types..."
                         className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                       />
                       <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                     </div>
                     <div className="flex bg-gray-100 rounded-lg p-1">
-                      <button 
+                      <button
                         onClick={() => setViewMode('table')}
                         className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'table' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                       >
                         <i className="fas fa-table"></i>
                       </button>
-                      <button 
+                      <button
                         onClick={() => setViewMode('card')}
                         className={`px-3 py-1 rounded-md transition-all duration-200 ${viewMode === 'card' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-600'}`}
                       >
@@ -449,7 +449,7 @@ const TipeNilaiManagement = () => {
                     </div>
                     <h5 className="text-lg font-medium text-gray-700 mb-2">No Grade Types Found</h5>
                     <p className="text-gray-500 max-w-md mx-auto">
-                      {searchTerm ? `No grade types match your search for "${searchTerm}".` : "You haven't registered any grade types yet. Click the 'Add Grade Type' button above to get started."}
+                      {searchTerm ? `No grade types match your search for "${searchTerm}".` : 'You haven\'t registered any grade types yet. Click the \'Add Grade Type\' button above to get started.'}
                     </p>
                   </div>
                 )}

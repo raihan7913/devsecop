@@ -32,13 +32,24 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "lint:report": "eslint src/ --format html --output-file eslint-report.html",
+    "security:audit": "npm audit",
+    "security:audit-fix": "npm audit fix",
+    "security:audit-report": "powershell -ExecutionPolicy Bypass -File ../generate-security-report.ps1",
+    "security:check": "npm audit --audit-level=moderate",
+    "security:test": "powershell -ExecutionPolicy Bypass -File ../zap-quick-scan.ps1"
   },
   "eslintConfig": {
     "extends": [

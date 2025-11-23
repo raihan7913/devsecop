@@ -16,7 +16,7 @@ const KenaikanKelas = () => {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
-  const fetchInitialData = async () => {
+  const fetchInitialData = async() => {
     setLoading(true);
     setError(null);
     try {
@@ -35,7 +35,7 @@ const KenaikanKelas = () => {
     }
   };
 
-  const fetchKelasForSemester = async (semesterId, setKelasState) => {
+  const fetchKelasForSemester = async(semesterId, setKelasState) => {
     if (!semesterId) {
       setKelasState([]);
       return;
@@ -44,18 +44,18 @@ const KenaikanKelas = () => {
       const data = await adminApi.getKelas(semesterId);
       setKelasState(data);
     } catch (err) {
-      console.error("Error fetching classes:", err);
+      console.error('Error fetching classes:', err);
       setKelasState([]);
     }
   };
 
-  const fetchStudentsForPromotion = async () => {
+  const fetchStudentsForPromotion = async() => {
     if (fromKelasId && fromTASemesterId) {
       try {
         const data = await adminApi.getSiswaInKelas(fromKelasId, fromTASemesterId);
         setStudentsInFromKelas(data);
       } catch (err) {
-        console.error("Error fetching students for promotion:", err);
+        console.error('Error fetching students for promotion:', err);
         setStudentsInFromKelas([]);
       }
     } else {
@@ -74,9 +74,9 @@ const KenaikanKelas = () => {
   useEffect(() => {
     // Set default fromKelasId when kelasFrom is loaded
     if (kelasFrom.length > 0 && !fromKelasId) {
-        setFromKelasId(kelasFrom[0].id_kelas);
+      setFromKelasId(kelasFrom[0].id_kelas);
     } else if (kelasFrom.length === 0) {
-        setFromKelasId(''); // Clear if no classes
+      setFromKelasId(''); // Clear if no classes
     }
   }, [kelasFrom, fromKelasId]); // Add fromKelasId to dependency array
 
@@ -87,9 +87,9 @@ const KenaikanKelas = () => {
   useEffect(() => {
     // Set default toKelasId when kelasTo is loaded
     if (kelasTo.length > 0 && !toKelasId) {
-        setToKelasId(kelasTo[0].id_kelas);
+      setToKelasId(kelasTo[0].id_kelas);
     } else if (kelasTo.length === 0) {
-        setToKelasId(''); // Clear if no classes
+      setToKelasId(''); // Clear if no classes
     }
   }, [kelasTo, toKelasId]); // Add toKelasId to dependency array
 
@@ -98,7 +98,7 @@ const KenaikanKelas = () => {
     fetchStudentsForPromotion();
   }, [fromKelasId, fromTASemesterId]);
 
-  const handlePromoteStudents = async () => {
+  const handlePromoteStudents = async() => {
     setMessage('');
     setMessageType('');
     if (!fromKelasId || !toKelasId || !fromTASemesterId || !toTASemesterId || studentsInFromKelas.length === 0) {
@@ -173,8 +173,8 @@ const KenaikanKelas = () => {
           {/* Message Display */}
           {message && (
             <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success' 
-                ? 'bg-green-50 border-green-500 text-green-700' 
+              messageType === 'success'
+                ? 'bg-green-50 border-green-500 text-green-700'
                 : 'bg-red-50 border-red-500 text-red-700'
             }`}>
               <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
@@ -205,11 +205,11 @@ const KenaikanKelas = () => {
                   From (Source)
                 </span>
               </h3>
-              
+
               <div className="space-y-4">
                 <div className="relative">
-                  <select 
-                    value={fromTASemesterId} 
+                  <select
+                    value={fromTASemesterId}
                     onChange={(e) => setFromTASemesterId(parseInt(e.target.value))}
                     className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 peer appearance-none"
                   >
@@ -225,8 +225,8 @@ const KenaikanKelas = () => {
                 </div>
 
                 <div className="relative">
-                  <select 
-                    value={fromKelasId} 
+                  <select
+                    value={fromKelasId}
                     onChange={(e) => setFromKelasId(parseInt(e.target.value))}
                     className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 peer appearance-none"
                   >
@@ -249,11 +249,11 @@ const KenaikanKelas = () => {
                   To (Destination)
                 </span>
               </h3>
-              
+
               <div className="space-y-4">
                 <div className="relative">
-                  <select 
-                    value={toTASemesterId} 
+                  <select
+                    value={toTASemesterId}
                     onChange={(e) => setToTASemesterId(parseInt(e.target.value))}
                     className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 peer appearance-none"
                   >
@@ -269,8 +269,8 @@ const KenaikanKelas = () => {
                 </div>
 
                 <div className="relative">
-                  <select 
-                    value={toKelasId} 
+                  <select
+                    value={toKelasId}
                     onChange={(e) => setToKelasId(parseInt(e.target.value))}
                     className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 peer appearance-none"
                   >
@@ -354,7 +354,7 @@ const KenaikanKelas = () => {
 
           {/* Promote Button */}
           <div className="flex justify-center">
-            <button 
+            <button
               onClick={handlePromoteStudents}
               disabled={studentsInFromKelas.length === 0 || !toKelasId}
               className="flex items-center justify-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-cyan-600 text-white rounded-xl hover:from-emerald-600 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:-translate-y-0.5 font-bold text-lg shadow-lg hover:shadow-xl"

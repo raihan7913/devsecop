@@ -20,7 +20,7 @@ function PWAInstallPrompt() {
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  const handleInstallClick = async () => {
+  const handleInstallClick = async() => {
     if (!installPrompt) {
       return;
     }
@@ -94,14 +94,14 @@ function PWAInstallPrompt() {
           }
         }
       `}</style>
-      
+
       <div style={{
         fontSize: '32px',
         flexShrink: 0
       }}>
         📱
       </div>
-      
+
       <div style={{ flex: 1 }}>
         <div style={{
           fontWeight: '600',

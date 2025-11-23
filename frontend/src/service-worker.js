@@ -63,9 +63,9 @@ registerRoute(
       // Ensure that only a certain number of resources are cached
       new ExpirationPlugin({
         maxEntries: 60,
-        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-      }),
-    ],
+        maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
+      })
+    ]
   })
 );
 
@@ -78,9 +78,9 @@ registerRoute(
     plugins: [
       new ExpirationPlugin({
         maxEntries: 60,
-        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-      }),
-    ],
+        maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
+      })
+    ]
   })
 );
 
@@ -92,9 +92,9 @@ registerRoute(
     plugins: [
       new ExpirationPlugin({
         maxEntries: 50,
-        maxAgeSeconds: 5 * 60, // 5 minutes
-      }),
-    ],
+        maxAgeSeconds: 5 * 60 // 5 minutes
+      })
+    ]
   })
 );
 
