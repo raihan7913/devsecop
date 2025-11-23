@@ -34,7 +34,7 @@ pipeline {
                 // Tunggu 10 detik biar server nyala dulu
                 sleep 10 
                 // Cek status container
-                sh 'docker compose ps'
+                sh 'docker-compose ps'
             }
         }
     }
