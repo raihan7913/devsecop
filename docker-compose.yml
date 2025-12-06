@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Service 1: Backend API
   backend:
     build: ./backend
     container_name: sinfomik_backend
@@ -11,19 +10,26 @@ services:
     environment:
       - PORT=5000
       - NODE_ENV=production
-      # Backend harus tahu URL Frontend untuk izin CORS
-      - FRONTEND_URL=http://localhost:3000 
+      - FRONTEND_URL=http://localhost:3000
       - JWT_SECRET=5a773de07047db45f31eb47d9dc775dc9ac00df93a37be96d16deb16a359c2b0
+      # ARAHKAN DATABASE KE FOLDER VOLUME
+      - DB_PATH=/app/data_persist/academic_dashboard.db 
     volumes:
-      - ./backend/academic_dashboard.db:/app/academic_dashboard.db
-      - ./backend/uploads:/app/uploads
+      # Gunakan Named Volume (Brankas Docker)
+      - sqlite_data:/app/data_persist
+      # Uploads juga bisa dipersistenkan
+      - uploads_data:/app/uploads
 
-  # Service 2: Frontend UI
   frontend:
     build: ./frontend
     container_name: sinfomik_frontend
     restart: unless-stopped
     ports:
-      - "3000:80" # Mapping port 3000 laptop ke port 80 container
+      - "3000:80"
     depends_on:
       - backend
+
+# Definisi Volume (Brankas)
+volumes:
+  sqlite_data:
+  uploads_data:

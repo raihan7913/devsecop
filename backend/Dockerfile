@@ -10,7 +10,7 @@ RUN npm ci --omit=dev
 
 # Copy source code
 COPY . .
-
+RUN mkdir -p /app/data_persist
 # Buat folder uploads dan database
 RUN mkdir -p uploads && touch academic_dashboard.db
 

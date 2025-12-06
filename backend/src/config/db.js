@@ -4,7 +4,7 @@ const path = require('path');
 
 // Tentukan path absolut ke file database
 // Ini penting agar database ditemukan dengan benar terlepas dari direktori kerja
-const DB_FILE = path.resolve(__dirname, '../../academic_dashboard.db');
+const DB_FILE = process.env.DB_PATH || path.resolve(__dirname, '../../academic_dashboard.db');
 
 let db;
 
