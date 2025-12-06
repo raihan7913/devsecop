@@ -1,7 +1,7 @@
 // Reusable Filter Section for Analytics
 import React from 'react';
 
-const AnalyticsFilterSection = ({ 
+const AnalyticsFilterSection = ({
   filters = [],
   onFilterChange,
   additionalContent = null

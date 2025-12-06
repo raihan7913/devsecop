@@ -5,7 +5,7 @@ export const useBatchApiCall = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const executeBatch = useCallback(async (apiCalls) => {
+  const executeBatch = useCallback(async(apiCalls) => {
     setLoading(true);
     setError(null);
     try {
@@ -29,6 +29,6 @@ export const useBatchApiCall = () => {
     loading,
     error,
     executeBatch,
-    reset,
+    reset
   };
 };

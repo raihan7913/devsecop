@@ -5,9 +5,9 @@ import {
   Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
-const AnalyticsBarChart = ({ 
-  data = [], 
-  xKey = 'nama_mapel', 
+const AnalyticsBarChart = ({
+  data = [],
+  xKey = 'nama_mapel',
   bars = [{ key: 'rata_rata', name: 'Rata-rata', color: '#82ca9d' }],
   height = 400,
   chartRef = null
@@ -39,10 +39,10 @@ const AnalyticsBarChart = ({
           <Tooltip />
           <Legend wrapperStyle={{ paddingTop: '20px' }} />
           {bars.map((bar, index) => (
-            <Bar 
-              key={bar.key || index} 
-              dataKey={bar.key} 
-              fill={bar.color} 
+            <Bar
+              key={bar.key || index}
+              dataKey={bar.key}
+              fill={bar.color}
               name={bar.name}
               radius={[8, 8, 0, 0]}
             />

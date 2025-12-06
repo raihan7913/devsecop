@@ -1,8 +1,8 @@
 // Reusable Analytics Data Table
 import React from 'react';
 
-const AnalyticsDataTable = ({ 
-  data = [], 
+const AnalyticsDataTable = ({
+  data = [],
   columns = [],
   emptyMessage = 'No data available'
 }) => {
@@ -31,7 +31,7 @@ const AnalyticsDataTable = ({
         </thead>
         <tbody>
           {data.map((row, rowIndex) => (
-            <tr 
+            <tr
               key={row.id || rowIndex}
               className="hover:bg-gray-50 transition-colors"
             >

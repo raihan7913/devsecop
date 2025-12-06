@@ -26,6 +26,6 @@ export const useModal = (initialOpen = false) => {
     openModal,
     closeModal,
     toggleModal,
-    setModalData,
+    setModalData
   };
 };

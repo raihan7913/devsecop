@@ -6,7 +6,7 @@ export const useApiCall = (apiFunction) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
 
-  const execute = useCallback(async (...params) => {
+  const execute = useCallback(async(...params) => {
     setLoading(true);
     setError(null);
     try {
@@ -35,6 +35,6 @@ export const useApiCall = (apiFunction) => {
     setData,
     setError,
     execute,
-    reset,
+    reset
   };
 };

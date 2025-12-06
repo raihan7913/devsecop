@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import * as adminApi from '../../api/admin';
 import { useApiState, useFormState } from '../../hooks';
-import { Modal, MessageAlert } from '../../components/common';
+import { MessageAlert } from '../../components/common';
 
 // Komponen Modal Edit Guru dengan Modern Design
 const EditTeacherModal = ({ teacher, onClose, onSave }) => {
-  const { formData: editedTeacher, handleInputChange, setForm } = useFormState({ ...teacher });
+  const { formData: editedTeacher, handleInputChange } = useFormState({ ...teacher });
   const { message, messageType, setSuccessMessage, setErrorMessage } = useApiState(false);
   const [showPassword, setShowPassword] = useState(false);
 

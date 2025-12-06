@@ -49,6 +49,6 @@ export const useApiState = (initialLoading = true) => {
     setSuccessMessage,
     setErrorMessage,
     clearMessage,
-    resetState,
+    resetState
   };
 };

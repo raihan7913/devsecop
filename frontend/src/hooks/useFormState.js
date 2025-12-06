@@ -33,6 +33,6 @@ export const useFormState = (initialState = {}) => {
     handleChange,
     handleInputChange,
     resetForm,
-    setForm,
+    setForm
   };
 };
