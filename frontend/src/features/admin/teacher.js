@@ -1,23 +1,21 @@
 // frontend/src/features/admin/teacher.js
 import React, { useState, useEffect } from 'react';
 import * as adminApi from '../../api/admin';
+import { useApiState, useFormState } from '../../hooks';
+import { Modal, MessageAlert } from '../../components/common';
 
 // Komponen Modal Edit Guru dengan Modern Design
 const EditTeacherModal = ({ teacher, onClose, onSave }) => {
-  const [editedTeacher, setEditedTeacher] = useState({ ...teacher });
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('');
+  const { formData: editedTeacher, handleInputChange, setForm } = useFormState({ ...teacher });
+  const { message, messageType, setSuccessMessage, setErrorMessage } = useApiState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditedTeacher(prev => ({ ...prev, [name]: value }));
+    handleInputChange(e);
   };
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    setMessage('');
-    setMessageType('');
     try {
       const dataToUpdate = {
         username: editedTeacher.username,
@@ -27,16 +25,14 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
       };
 
       const response = await adminApi.updateTeacher(editedTeacher.id_guru, dataToUpdate);
-      setMessage(response.message);
-      setMessageType('success');
+      setSuccessMessage(response.message);
 
       setTimeout(() => {
         onSave();
         onClose();
       }, 1500);
     } catch (err) {
-      setMessage(err.message);
-      setMessageType('error');
+      setErrorMessage(err.message);
     }
   };
 
@@ -53,16 +49,7 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
           </button>
         </div>
 
-        {message && (
-          <div className={`p-4 mb-4 rounded-lg border-l-4 transition-all duration-300 ${
-            messageType === 'success'
-              ? 'bg-green-50 border-green-500 text-green-700'
-              : 'bg-red-50 border-red-500 text-red-700'
-          }`}>
-            <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
-            {message}
-          </div>
-        )}
+        <MessageAlert message={message} messageType={messageType} />
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -164,16 +151,13 @@ const EditTeacherModal = ({ teacher, onClose, onSave }) => {
 
 const GuruManagement = () => {
   const [teachers, setTeachers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [newTeacher, setNewTeacher] = useState({
+  const { loading, setLoading, error, setError, message, messageType, setSuccessMessage, setErrorMessage } = useApiState();
+  const { formData: newTeacher, handleInputChange: handleNewTeacherChange, resetForm } = useFormState({
     username: '',
     password: '',
     nama_guru: '',
     email: ''
   });
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -197,34 +181,15 @@ const GuruManagement = () => {
     fetchTeachers();
   }, []);
 
-  const showMessage = (text, type = 'success') => {
-    setMessage(text);
-    setMessageType(type);
-
-    setTimeout(() => {
-      setMessage('');
-      setMessageType('');
-    }, 5000);
-  };
-
   const handleAddTeacher = async(e) => {
     e.preventDefault();
-    setMessage('');
-    setMessageType('');
     try {
       const response = await adminApi.addTeacher(newTeacher);
-      setMessage(response.message);
-      setMessageType('success');
-      setNewTeacher({
-        username: '',
-        password: '',
-        nama_guru: '',
-        email: ''
-      });
+      setSuccessMessage(response.message);
+      resetForm();
       fetchTeachers();
     } catch (err) {
-      setMessage(err.message);
-      setMessageType('error');
+      setErrorMessage(err.message);
     }
   };
 
@@ -237,11 +202,10 @@ const GuruManagement = () => {
     if (window.confirm(`Are you sure you want to delete teacher ${nama_guru} (ID: ${id_guru})? This action cannot be undone.`)) {
       try {
         const response = await adminApi.deleteTeacher(id_guru);
-        showMessage(response.message);
+        setSuccessMessage(response.message);
         fetchTeachers();
       } catch (err) {
-        setMessage(err.message);
-        setMessageType('error');
+        setErrorMessage(err.message);
       }
     }
   };
@@ -362,16 +326,7 @@ const GuruManagement = () => {
           </div>
 
           {/* Message Display */}
-          {message && (
-            <div className={`p-4 mb-6 rounded-lg transition-all duration-300 ease-in-out border-l-4 ${
-              messageType === 'success'
-                ? 'bg-green-50 border-green-500 text-green-700'
-                : 'bg-red-50 border-red-500 text-red-700'
-            }`}>
-              <i className={`fas ${messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2`}></i>
-              {message}
-            </div>
-          )}
+          <MessageAlert message={message} messageType={messageType} />
 
           {/* Add Teacher Form */}
           <div className="mb-10">
@@ -386,8 +341,9 @@ const GuruManagement = () => {
                 <div className="relative">
                   <input
                     type="text"
+                    name="username"
                     value={newTeacher.username}
-                    onChange={(e) => setNewTeacher({ ...newTeacher, username: e.target.value })}
+                    onChange={handleNewTeacherChange}
                     required
                     className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 peer"
                     placeholder=" "
@@ -400,8 +356,9 @@ const GuruManagement = () => {
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
+                    name="password"
                     value={newTeacher.password}
-                    onChange={(e) => setNewTeacher({ ...newTeacher, password: e.target.value })}
+                    onChange={handleNewTeacherChange}
                     required
                     className="block w-full px-4 py-3 pr-12 text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 peer"
                     placeholder=" "
@@ -421,8 +378,9 @@ const GuruManagement = () => {
                 <div className="relative">
                   <input
                     type="text"
+                    name="nama_guru"
                     value={newTeacher.nama_guru}
-                    onChange={(e) => setNewTeacher({ ...newTeacher, nama_guru: e.target.value })}
+                    onChange={handleNewTeacherChange}
                     required
                     className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 peer"
                     placeholder=" "
@@ -435,8 +393,9 @@ const GuruManagement = () => {
                 <div className="relative">
                   <input
                     type="email"
+                    name="email"
                     value={newTeacher.email}
-                    onChange={(e) => setNewTeacher({ ...newTeacher, email: e.target.value })}
+                    onChange={handleNewTeacherChange}
                     className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 peer"
                     placeholder=" "
                   />
