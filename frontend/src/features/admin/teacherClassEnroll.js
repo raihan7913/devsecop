@@ -137,7 +137,7 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
   const groupedAssignments = () => {
     const grouped = {};
 
-    filteredAssignments.forEach((assignment, index) => {
+    filteredAssignments.forEach((assignment) => {
       const teacherKey = assignment.id_guru; // Use teacher ID as unique key
 
       if (!grouped[teacherKey]) {
@@ -172,23 +172,7 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
     return grouped;
   };
 
-  // Function to get subject-to-class mapping for detailed view
-  const getSubjectClassMapping = (assignments) => {
-    const mapping = {};
-    assignments.forEach(assignment => {
-      const subject = assignment.nama_mapel;
-      if (!mapping[subject]) {
-        mapping[subject] = [];
-      }
-      mapping[subject].push({
-        kelas: assignment.nama_kelas,
-        id_kelas: assignment.id_kelas,
-        tahun_ajaran: assignment.tahun_ajaran,
-        semester: assignment.semester
-      });
-    });
-    return mapping;
-  };
+  // getSubjectClassMapping removed - previously unused helper
 
   // NEW: Group assignments by class (for modal display)
   const getClassSubjectMapping = (assignments) => {
@@ -331,90 +315,9 @@ const GuruMapelKelasAssignment = ({ activeTASemester }) => {
     a => a.id_kelas === selectedClass.id_kelas && a.is_wali_kelas === 1
   ) : null;
 
-  // Render grouped assignments table
-  const renderGroupedAssignmentsTable = () => {
-    const grouped = groupedAssignments();
-
-    return (
-      <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm bg-white">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gradient-to-r from-emerald-50 to-cyan-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-emerald-600 uppercase tracking-wider">Teacher</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-emerald-600 uppercase tracking-wider">Subjects</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-emerald-600 uppercase tracking-wider">Classes</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-emerald-600 uppercase tracking-wider">Total Assignments</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-emerald-600 uppercase tracking-wider">Academic Year</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-emerald-600 uppercase tracking-wider">Semester</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {Object.values(grouped).map((group, index) => (
-              <tr
-                key={group.teacher.id_guru}
-                className={`hover:bg-gray-50 transition-all duration-200 cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}
-                onClick={() => openTeacherDetail(group)}
-              >
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <div className="flex items-center">
-                    <div className="bg-gradient-to-br from-rose-400 to-pink-500 p-2 rounded-full mr-3">
-                      <i className="fas fa-chalkboard-teacher text-white text-sm"></i>
-                    </div>
-                    <div>
-                      <div className="flex items-center">
-                        <span className="font-medium mr-2">{group.teacher.nama_guru}</span>
-                        {group.isWaliKelas && (
-                          <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-bold flex items-center">
-                            <i className="fas fa-home mr-1"></i>
-                            Wali Kelas
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-500">ID: {group.teacher.id_guru}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
-                  <div className="flex flex-wrap gap-1">
-                    {group.subjects.map((subject, idx) => (
-                      <span key={idx} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        <i className={`fas ${getSubjectIcon(subject)} mr-1`}></i>
-                        {subject}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
-                  <div className="flex flex-wrap gap-1">
-                    {group.classes.map((kelas, idx) => (
-                      <span key={idx} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                        <i className="fas fa-door-open mr-1"></i>
-                        {kelas}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                    <i className="fas fa-tasks mr-1"></i>
-                    {group.assignments.length}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">
-                  {group.assignments[0]?.tahun_ajaran}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                    {group.assignments[0]?.semester}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
+  // Render grouped assignments table (unused - group view is shown as cards)
+  /* renderGroupedAssignmentsTable removed - no longer used in current UI */
+  // removed unused grouped table renderer (we render grouped cards instead)
 
   const renderAssignmentsTable = () => (
     <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm bg-white">

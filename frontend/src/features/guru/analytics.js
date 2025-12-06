@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchGuruAnalytics, fetchStudentAnalytics } from '../../api/analytics';
 import {
-  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { ALLOWED_MAPEL_WALI, SCHOOL_CLASSES, normalizeName } from '../../config/constants';

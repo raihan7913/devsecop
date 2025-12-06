@@ -1,15 +1,14 @@
 // frontend/src/features/admin/gradeManagement.js
 import React, { useState, useEffect } from 'react';
 import * as adminApi from '../../api/admin';
-import * as guruApi from '../../api/guru'; // Untuk mendapatkan daftar guru
+// removed unused import of guruApi (not used in this component)
 
 // Komponen Modal Pengajuan Perubahan Nilai
 const RequestGradeChangeModal = ({ grade, onClose, onSave, adminId, teachers }) => {
   const [newGradeValue, setNewGradeValue] = useState(grade.nilai);
   const [catatanAdmin, setCatatanAdmin] = useState('');
   const [selectedGuruApproverId, setSelectedGuruApproverId] = useState(grade.id_guru); // Default ke guru pemilik nilai
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('');
+  // message/messageType state not used in this component currently
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -116,8 +115,7 @@ const GradeManagementAdmin = ({ adminId }) => { // Terima adminId dari Dashboard
   const [teachers, setTeachers] = useState([]); // Untuk daftar guru penyetuju
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('');
+  // Parent component does not currently use a top-level message; modal manages its own message state
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [selectedGrade, setSelectedGrade] = useState(null);
 
@@ -153,7 +151,7 @@ const GradeManagementAdmin = ({ adminId }) => { // Terima adminId dari Dashboard
   return (
     <div className="feature-content">
       <h2>Manajemen Nilai Siswa</h2>
-      {message && <div className={`message ${messageType}`}>{message}</div>}
+      {/* Message bar removed — no active messages are set in this component */}
 
       <h4>Daftar Semua Nilai Siswa</h4>
       {grades.length > 0 ? (

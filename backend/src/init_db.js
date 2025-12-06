@@ -1,7 +1,7 @@
 // backend/src/init_db.js
 const { getDb } = require('./config/db');
 const { createHash } = require('crypto'); // Untuk hashing SHA256
-const { format, addDays } = require('date-fns'); // Untuk format tanggal dan manipulasi tanggal
+const { format } = require('date-fns'); // Untuk format tanggal
 
 // Helper untuk hashing password (sesuai dengan yang digunakan di Python hashlib.sha256)
 function hashPasswordPythonStyle(password) {
@@ -259,7 +259,6 @@ async function insertDummyData(db) {
 
     // --- 6. Tahun Ajaran & Semester ---
     const taSemesterCount = (await getQuery('SELECT COUNT(*) AS count FROM TahunAjaranSemester')).count;
-    let activeTASemesterId = null;
     let allTASemesters = [];
     if (taSemesterCount === 0) {
       const taSemesters = [
@@ -267,16 +266,16 @@ async function insertDummyData(db) {
         { tahun_ajaran: '2024/2025', semester: 'Ganjil', is_aktif: 1 } // Set this as active
       ];
       for (const tas of taSemesters) {
-        const id = await runQuery('INSERT INTO TahunAjaranSemester (tahun_ajaran, semester, is_aktif) VALUES (?, ?, ?)',
+        await runQuery('INSERT INTO TahunAjaranSemester (tahun_ajaran, semester, is_aktif) VALUES (?, ?, ?)',
           [tas.tahun_ajaran, tas.semester, tas.is_aktif]);
-        if (tas.is_aktif) activeTASemesterId = id;
+        // intentionally not storing active TA semester id here (not used later)
       }
       allTASemesters = await allQuery('SELECT id_ta_semester, tahun_ajaran, semester FROM TahunAjaranSemester');
       console.log(`${taSemesters.length} Tahun Ajaran & Semester dummy ditambahkan.`);
     } else {
       allTASemesters = await allQuery('SELECT id_ta_semester, tahun_ajaran, semester FROM TahunAjaranSemester');
-      const activeTAS = await getQuery('SELECT id_ta_semester FROM TahunAjaranSemester WHERE is_aktif = 1');
-      if (activeTAS) activeTASemesterId = activeTAS.id_ta_semester;
+      await getQuery('SELECT id_ta_semester FROM TahunAjaranSemester WHERE is_aktif = 1');
+      // activeTAS value captured but we don't need to store it in this scope
       console.log('Table TahunAjaranSemester already contains data. Skipping dummy data insertion.');
     }
 
@@ -365,7 +364,7 @@ async function insertDummyData(db) {
     const nilaiCount = (await getQuery('SELECT COUNT(*) AS count FROM Nilai')).count;
     if (nilaiCount === 0) {
       const allStudents = await allQuery('SELECT id_siswa, nama_siswa FROM Siswa');
-      const allGuruMapelKelas = await allQuery('SELECT id_guru, id_mapel, id_kelas, id_ta_semester FROM GuruMataPelajaranKelas');
+      // Gathered teacher-assignments not needed here for initialization
       const allKelas = await allQuery('SELECT id_kelas, nama_kelas, id_ta_semester FROM Kelas');
       const allSubjects = await allQuery('SELECT id_mapel, nama_mapel FROM MataPelajaran');
 

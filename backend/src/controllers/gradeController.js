@@ -3,7 +3,7 @@ const { getDb } = require('../config/db');
 const xlsx = require('xlsx');
 const fs = require('fs');
 const path = require('path');
-const excelController = require('./excelController');
+// const excelController = require('./excelController'); // unused - removed to satisfy linter
 
 /**
  * Export template Excel untuk input nilai
@@ -11,7 +11,7 @@ const excelController = require('./excelController');
  */
 exports.exportGradeTemplate = async(req, res) => {
   try {
-    const { id_guru, id_mapel, id_kelas, id_ta_semester } = req.params;
+    const { id_mapel, id_kelas, id_ta_semester } = req.params;
 
     const db = getDb();
 
@@ -901,7 +901,7 @@ exports.exportFinalGrades = async(req, res) => {
     worksheet.getColumn(3).alignment = { vertical: 'middle', horizontal: 'left' };
 
     // 10. Add borders to all cells
-    worksheet.eachRow((row, rowNumber) => {
+    worksheet.eachRow((row) => {
       row.eachCell((cell) => {
         cell.border = {
           top: { style: 'thin' },

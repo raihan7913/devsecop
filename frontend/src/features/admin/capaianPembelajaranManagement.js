@@ -91,7 +91,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
         throw new Error(errorData.message || 'Failed to save changes');
       }
 
-      const result = await response.json();
+      await response.json();
       setSaveMessage('✓ Changes saved successfully!');
       setAtpData([...editedData]); // Update original data
       setIsEditMode(false);
@@ -119,7 +119,7 @@ const AtpViewerModal = ({ id_mapel, fase, nama_mapel, onClose }) => {
     const matchesKelas = filterKelas === 'all' || String(row.Kelas) === filterKelas;
     const matchesSemester = filterSemester === 'all' || String(row.Semester) === filterSemester;
     return matchesSearch && matchesKelas && matchesSemester;
-  }).map((row, idx) => ({ ...row, _originalIndex: dataToDisplay.indexOf(row) }));
+  }).map((row, idx) => ({ ...row, _originalIndex: idx }));
 
   // Get unique values for filters
   const uniqueKelas = [...new Set(dataToDisplay.map(row => row.Kelas).filter(Boolean))].sort();

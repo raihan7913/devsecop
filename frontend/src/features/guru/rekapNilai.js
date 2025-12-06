@@ -1,7 +1,7 @@
 // frontend/src/features/guru/rekapNilai.js
 import React, { useState, useEffect } from 'react';
 import * as guruApi from '../../api/guru';
-import * as adminApi from '../../api/admin'; // Perlu getTipeNilai dari adminApi
+// adminApi not required here
 
 const RekapNilai = ({ activeTASemester, userId }) => {
   const [assignments, setAssignments] = useState([]);
@@ -9,8 +9,8 @@ const RekapNilai = ({ activeTASemester, userId }) => {
   const [rekapNilai, setRekapNilai] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('');
+  const [message] = useState('');
+  const [messageType] = useState('');
 
   const fetchData = async() => {
     setLoading(true);

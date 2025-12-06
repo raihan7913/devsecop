@@ -3,7 +3,7 @@ import React from 'react';
 
 // Komponen ini sekarang hanya berfungsi sebagai placeholder atau wrapper
 // Konten sebenarnya (tab manajemen) sudah dipindahkan ke DashboardPage
-function AdminDashboardContent({ username }) {
+function AdminDashboardContent() {
   return (
     <div>
       {/* Konten utama Admin Dashboard akan dirender langsung di DashboardPage */}

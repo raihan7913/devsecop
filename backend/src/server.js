@@ -35,8 +35,25 @@ if (process.env.NODE_ENV === 'production') {
 
 // 1. Helmet - Set security HTTP headers
 app.use(helmet({
-  contentSecurityPolicy: false, // Disable untuk development, enable di production
-  crossOriginEmbedderPolicy: false
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Allow inline scripts for React
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      frameSrc: ["'none'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: []
+    }
+  },
+  crossOriginEmbedderPolicy: false,
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  }
 }));
 
 // 2. CORS - Configure properly untuk specific origin
@@ -84,7 +101,32 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: true // Don't count successful requests
 });
 
-// 4. Body parser with size limits
+// 4. Additional Security Headers
+app.use((req, res, next) => {
+  // Anti-clickjacking
+  res.setHeader('X-Frame-Options', 'DENY');
+  
+  // Prevent MIME type sniffing
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
+  // Permissions Policy (formerly Feature-Policy)
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  
+  // Remove server version info
+  res.removeHeader('X-Powered-By');
+  
+  // Referrer Policy
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // Cross-Origin Policies for Spectre protection
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  
+  next();
+});
+
+// 5. Body parser with size limits
 app.use(express.json({ limit: '10mb' })); // Limit request body size
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -156,7 +198,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error('Error:', err.stack);
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',

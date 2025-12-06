@@ -71,7 +71,7 @@ async function seedAnalyticsData() {
     const allGuru = await allQuery('SELECT * FROM Guru ORDER BY id_guru');
     const allMapel = await allQuery('SELECT * FROM MataPelajaran ORDER BY id_mapel');
     const allTASemester = await allQuery('SELECT * FROM TahunAjaranSemester ORDER BY tahun_ajaran, semester');
-    const allKelas = await allQuery('SELECT * FROM Kelas ORDER BY id_kelas');
+    const _allKelas = await allQuery('SELECT * FROM Kelas ORDER BY id_kelas');
 
     console.log(`📊 Found: ${allSiswa.length} siswa, ${allGuru.length} guru, ${allMapel.length} mapel, ${allTASemester.length} TA/Semester`);
 
@@ -296,6 +296,9 @@ async function seedAnalyticsData() {
     process.exit(1);
   }
 
-  // Run the seeding
+} // end seedAnalyticsData
+
+// Run the seeding (only when this script is executed directly)
+if (require.main === module) {
   seedAnalyticsData();
 }

@@ -6,109 +6,14 @@ import {
   fetchStudentAnalytics
 } from '../../api/analytics';
 import {
-  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend, ResponsiveContainer, Label as RechartsLabel
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// Custom Label component for showing values on chart points
-const CustomizedLabel = (props) => {
-  const { x, y, value } = props;
-  return (
-    <text
-      x={x}
-      y={y - 10}
-      fill="#000"
-      fontSize="12"
-      fontWeight="bold"
-      textAnchor="middle"
-    >
-      {value ? value.toFixed(1) : ''}
-    </text>
-  );
-};
-
-// Simple test component to verify Recharts works
-const SimpleChartTest = () => {
-  const testData = [
-    { name: 'A', value: 50 },
-    { name: 'B', value: 70 },
-    { name: 'C', value: 85 }
-  ];
-
-  console.log('🧪 SimpleChartTest rendering with data:', testData);
-  console.log('🔍 ResponsiveContainer type:', typeof ResponsiveContainer);
-  console.log('🔍 BarChart type:', typeof BarChart);
-
-  return (
-    <div style={{
-      width: '100%',
-      minHeight: '350px',
-      background: '#fff3cd',
-      padding: '20px',
-      marginBottom: '20px',
-      border: '3px solid #ff9800',
-      borderRadius: '8px'
-    }}>
-      <h4 style={{ margin: '0 0 10px 0', color: '#ff6b00', fontSize: '16px', fontWeight: 'bold' }}>
-                🧪 CHART TEST - Part 1: CSS Bar Chart (Should ALWAYS work)
-      </h4>
-      <div style={{ marginBottom: '20px' }}>
-        {testData.map(item => (
-          <div key={item.name} style={{ marginBottom: '8px' }}>
-            <span style={{ display: 'inline-block', width: '30px', fontWeight: 'bold' }}>{item.name}:</span>
-            <div style={{
-              display: 'inline-block',
-              width: `${item.value * 3}px`,
-              height: '30px',
-              background: 'linear-gradient(90deg, #4caf50, #66bb6a)',
-              borderRadius: '4px',
-              marginLeft: '10px',
-              position: 'relative',
-              verticalAlign: 'middle'
-            }}>
-              <span style={{
-                position: 'absolute',
-                right: '5px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: '12px'
-              }}>{item.value}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <h4 style={{ margin: '20px 0 10px 0', color: '#ff6b00', fontSize: '16px', fontWeight: 'bold' }}>
-                🧪 Part 2: Recharts SVG Chart (May not work if SVG broken)
-      </h4>
-      <p style={{ margin: '5px 0', fontSize: '12px', color: '#666' }}>
-                If you see green bars above but NOTHING below, then Recharts/SVG is the problem.
-      </p>
-      <div style={{
-        width: '100%',
-        height: '200px',
-        background: 'white',
-        border: '2px dashed #4caf50',
-        marginTop: '10px'
-      }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={testData} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
-            <XAxis dataKey="name" stroke="#333" />
-            <YAxis stroke="#333" />
-            <Tooltip />
-            <Bar dataKey="value" fill="#4caf50" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-};
+// (removed small chart test & label to reduce unused symbols)
 
 const AdminAnalytics = () => {
   // State management
@@ -508,7 +413,7 @@ const AdminAnalytics = () => {
   }, [selectedAngkatan, selectedMapelAngkatan, activeTab]);
 
   // Prepare chart data - simpler approach, use 'nilai' as the key for single subject view
-  const prepareChartData = (data, mapelName = 'nilai') => {
+  const prepareChartData = (data) => {
     if (!data || data.length === 0) {
       return [];
     }

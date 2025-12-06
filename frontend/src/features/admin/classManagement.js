@@ -146,9 +146,9 @@ const KelasManagement = ({ activeTASemester }) => {
   const [messageType, setMessageType] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedKelas, setSelectedKelas] = useState(null);
-  const [showForm, setShowForm] = useState(false);
+  // showForm previously used to toggle an inline add form; currently unused so removed to avoid lint warning
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterSemester, setFilterSemester] = useState('all');
+  const [filterSemester] = useState('all');
 
   const fetchKelasAndTeachers = async() => {
     setLoading(true);
@@ -241,16 +241,7 @@ const KelasManagement = ({ activeTASemester }) => {
   const classesWithTeachers = kelas.filter(k => k.wali_kelas).length;
   const classesWithoutTeachers = totalClasses - classesWithTeachers;
 
-  // Get current time
-  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date().toLocaleTimeString());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
+  // currentTime removed (previously used for a UI clock) because it was never referenced in the render
 
   if (loading) {
     return (

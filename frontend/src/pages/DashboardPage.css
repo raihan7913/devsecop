@@ -28,7 +28,7 @@ html, body, #root {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* prevent body scroll; main content will handle scrolling */
+    overflow-x: hidden; /* prevent horizontal scroll only */
 }
 
 /* Use sensible defaults; avoid global transform rules that break position:fixed */
@@ -39,10 +39,12 @@ html, body, #root {
 /* Ganti .sidebar dan .main-content dengan class dari komponen React */
 .dashboard-container {
     display: flex;
-    height: 100vh; /* full viewport height */
+    min-height: 100vh; /* min-height instead of height for mobile */
     position: relative;
     width: 100%;
-    overflow: hidden; /* prevent body scroll */
+    max-width: 100vw;
+    overflow-x: hidden; /* prevent horizontal scroll */
+    box-sizing: border-box;
 }
 
 .app-sidebar {
@@ -428,19 +430,20 @@ html, body, #root {
 .mobile-menu-btn {
     display: none; /* Default: hidden di desktop */
     position: fixed;
-    top: 1rem;
-    left: 1rem;
-    z-index: 1101; /* Di atas sidebar (1100) */
+    top: clamp(12px, 3vw, 20px); /* Flexible top position */
+    left: clamp(12px, 3vw, 20px); /* Flexible left position */
+    z-index: 2000;
     background-color: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
+    border-radius: clamp(8px, 2vw, 12px); /* Flexible border radius */
+    padding: clamp(8px, 2vw, 12px); /* Flexible padding */
     cursor: pointer;
-    height: 44px; /* Touch target 44px */
-    width: 44px;
+    height: clamp(40px, 10vw, 48px); /* Flexible height: 40px-48px */
+    width: clamp(40px, 10vw, 48px); /* Flexible width: 40px-48px */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu-btn:hover {
@@ -465,14 +468,19 @@ html, body, #root {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height */
     background-color: rgba(0, 0, 0, 0.6);
-    z-index: 1099; /* Di bawah sidebar (1100) dan mobile-menu-btn (1101) */
+    z-index: 1500; /* ABOVE content (1), BELOW sidebar (1800) */
     display: block;
     opacity: 0;
     animation: fadeIn 0.3s ease-out forwards;
-    cursor: pointer; /* Tunjukkan bahwa overlay bisa diklik */
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
 }
 
 /* Animasi fade in untuk overlay */
@@ -1244,26 +1252,36 @@ html, body, #root {
         display: flex !important; /* Show on mobile */
         align-items: center;
         justify-content: center;
+        z-index: 2000 !important; /* ALWAYS on top */
+        -webkit-tap-highlight-color: transparent;
+        pointer-events: auto; /* Ensure button receives clicks */
     }
     
     .dashboard-container {
         position: relative;
+        display: flex !important; /* Flex layout for sidebar + content */
+        flex-direction: row !important;
+        height: auto !important;
+        min-height: 100vh;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
     }
     
     .app-sidebar {
-        position: fixed !important;
-        transform: translateX(-100%) !important;
-        width: 75vw !important; /* 75% dari viewport width, lebih ramping */
-        max-width: 300px !important; /* Maksimal 300px */
-        z-index: 1100 !important;
-        left: 0 !important;
-        top: 0 !important;
-        transition: transform 0.3s ease !important;
+        position: relative !important; /* Normal flow, not fixed */
+        display: none !important; /* Hidden by default */
+        width: clamp(250px, 75vw, 320px) !important;
+        max-width: 85vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        float: left !important; /* Float to left side */
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 1800 !important;
     }
     
     .app-sidebar.open {
-        transform: translateX(0) !important;
-        box-shadow: 8px 0 25px rgba(0, 0, 0, 0.15) !important;
+        display: flex !important; /* Show when open */
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2) !important;
     }
     
     .app-sidebar.collapsed {
@@ -1272,22 +1290,48 @@ html, body, #root {
     }
     
     .main-content-area {
-        width: 100%;
-        max-width: 100vw;
-        margin-left: 0 !important; /* No margin on mobile */
-        overflow-x: hidden;
+        position: relative !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        padding-top: clamp(60px, 12vh, 75px) !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     
-    /* Pastikan konten tidak tertutup sidebar */
+    /* When sidebar opens, content flows next to it */
+    .main-content-area.sidebar-open-mobile {
+        width: calc(100vw - clamp(250px, 75vw, 320px)) !important; /* Take remaining space */
+        float: right !important; /* Float next to sidebar */
+    }
+    
+    /* Content wrapper uses FULL viewport - no space reserved for sidebar */
     .main-content-area .content-wrapper {
-        padding: 12px !important;
+        padding: clamp(12px, 4vw, 20px) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+        min-height: calc(100vh - clamp(56px, 12vh, 72px)) !important;
     }
     
-    /* Header title lebih kecil di mobile */
+    /* Flexible header title sizing based on viewport */
     .dashboard-header h1,
     .dashboard-header-main h1 {
-        font-size: 20px !important;
+        font-size: clamp(18px, 5vw, 24px) !important; /* Fluid font size */
         margin: 0 !important;
+        padding: clamp(8px, 2vw, 16px) !important;
+    }
+    
+    /* Flexible spacing for all mobile content */
+    .dashboard-header,
+    .dashboard-header-main {
+        padding: clamp(12px, 3vw, 20px) !important;
     }
 }
 

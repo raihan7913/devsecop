@@ -287,7 +287,7 @@ function DashboardPage({ userRole, username, userId, onLogout }) {
       )}
 
       {/* PERBARUI: Main content area dengan class conditional */}
-      <div className={`main-content-area ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <div className={`main-content-area ${isSidebarCollapsed ? 'sidebar-collapsed' : ''} ${isSidebarOpen && isMobile ? 'sidebar-open-mobile' : ''}`}>
         {/* ... (Isi konten utama tidak berubah) ... */}
         <div className="dashboard-header">
           <h1 className="text-2xl font-bold text-gray-800">
