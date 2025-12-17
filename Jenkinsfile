@@ -24,11 +24,22 @@ pipeline {
                   docker rm -f sinfomik_backend || true
                   docker rm -f sinfomik_frontend || true
 
+                  # Detect docker-compose command (docker-compose or 'docker compose')
+                  if command -v docker-compose >/dev/null 2>&1; then
+                    DC=docker-compose
+                  elif docker compose version >/dev/null 2>&1; then
+                    DC="docker compose"
+                  else
+                    echo "ERROR: neither 'docker-compose' nor 'docker compose' is available on this agent"; exit 1
+                  fi
+
+                  echo "Using compose command: $DC"
+
                   # Build backend & frontend images (no-cache on first try)
-                  docker compose -f ${COMPOSE_FILE} build --no-cache backend frontend || docker compose -f ${COMPOSE_FILE} build backend frontend
+                  eval "$DC -f ${COMPOSE_FILE} build --no-cache backend frontend" || eval "$DC -f ${COMPOSE_FILE} build backend frontend"
 
                   # Deploy only the app services; do NOT touch prometheus/grafana
-                  docker compose -f ${COMPOSE_FILE} up -d --build backend frontend
+                  eval "$DC -f ${COMPOSE_FILE} up -d --build backend frontend"
                 '''
             }
         }
