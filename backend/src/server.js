@@ -21,6 +21,28 @@ const app = express();
 const PORT = process.env.PORT || 5000; // Gunakan port dari .env atau default 5000
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
+// -----------------------------
+// Prometheus Metrics (prom-client)
+// -----------------------------
+const client = require('prom-client');
+// Collect default Node.js / process metrics
+client.collectDefaultMetrics({ timeout: 5000 });
+
+// Histogram for request durations
+const httpRequestDurationSeconds = new client.Histogram({
+  name: 'http_request_duration_seconds',
+  help: 'HTTP request duration in seconds',
+  labelNames: ['method', 'route', 'status'],
+  buckets: [0.05, 0.1, 0.3, 0.5, 0.75, 1, 2, 5]
+});
+
+// Counter for total requests
+const httpRequestsTotal = new client.Counter({
+  name: 'http_requests_total',
+  help: 'Total HTTP requests',
+  labelNames: ['method', 'route', 'status']
+});
+
 // ===============================
 // TRUST PROXY (untuk Railway)
 // ===============================
@@ -158,6 +180,18 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' })); // Limit request body size
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// -----------------------------
+// Metrics middleware (collect per-request metrics)
+// -----------------------------
+app.use((req, res, next) => {
+  const end = httpRequestDurationSeconds.startTimer({ method: req.method, route: req.path });
+  res.on('finish', () => {
+    httpRequestsTotal.inc({ method: req.method, route: req.path, status: res.statusCode });
+    end({ status: res.statusCode });
+  });
+  next();
+});
+
 // Koneksi ke database saat aplikasi dimulai
 connectDb();
 
@@ -175,6 +209,16 @@ app.use('/api/excel', excelRoutes);
 app.use('/api/grades', gradeRoutes);
 app.use('/api/kkm', kkmRoutes);
 app.use('/api/analytics', analyticsRoutes);
+
+// Metrics endpoint for Prometheus
+app.get('/metrics', async (req, res) => {
+  try {
+    res.set('Content-Type', client.register.contentType);
+    res.end(await client.register.metrics());
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
 
 // Health check endpoint (before static files)
 app.get('/health', (req, res) => {

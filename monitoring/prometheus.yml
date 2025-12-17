@@ -20,7 +20,7 @@ scrape_configs:
   # Prometheus itself
   - job_name: 'prometheus'
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['prometheus:9090']
 
   # cAdvisor - Container metrics
   - job_name: 'cadvisor'
@@ -37,8 +37,27 @@ scrape_configs:
       - targets: ['node-exporter:9100']
 
   # Sinfomik Application (health endpoint)
-  - job_name: 'sinfomik-app'
-    metrics_path: '/health'
+  - job_name: 'sinfomik-backend'
+    metrics_path: '/metrics'
     static_configs:
-      - targets: ['sinfomik:5000']
+      - targets: ['host.docker.internal:5000']
+    scrape_interval: 15s
+
+  # Frontend is monitored via blackbox HTTP probes for availability (see sinfomik-blackbox-probes)
+  # Direct scraping of frontend HTML is disabled because it does not expose Prometheus metrics.
+
+
+  - job_name: 'sinfomik-blackbox-probes'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://host.docker.internal:3000/
+        - http://host.docker.internal:5000/health
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: blackbox:9115  # Blackbox exporter service
     scrape_interval: 30s

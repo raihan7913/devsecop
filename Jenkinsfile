@@ -15,26 +15,57 @@ pipeline {
             }
         }
 
-        // TAHAP 2: Build & Deploy (The Real Deal)
+        // TAHAP 2: Build & Deploy (safe, app-only)
         stage('Build & Deploy') {
             steps {
-                echo '🚀 Starting Real Deployment...'
-                
-                // Matikan container lama & Build ulang yang baru
-                // Kita pakai perintah shell 'sh' sungguhan
-                sh 'docker-compose down'
-                sh 'docker-compose up -d --build'
+                echo '🚀 Starting Safe Deployment (build only app services)...'
+                sh '''
+                  # Remove only app containers (ignore errors)
+                  docker rm -f sinfomik_backend || true
+                  docker rm -f sinfomik_frontend || true
+
+                  # Build backend & frontend images (no-cache on first try)
+                  docker compose -f ${COMPOSE_FILE} build --no-cache backend frontend || docker compose -f ${COMPOSE_FILE} build backend frontend
+
+                  # Deploy only the app services; do NOT touch prometheus/grafana
+                  docker compose -f ${COMPOSE_FILE} up -d --build backend frontend
+                '''
             }
         }
-        
-        // TAHAP 3: Verify
-        stage('Health Check') {
+
+        // TAHAP 3: Smoke Tests & Prometheus check
+        stage('Smoke Tests') {
             steps {
-                echo 'Checking if services are up...'
-                // Tunggu 10 detik biar server nyala dulu
-                sleep 10 
-                // Cek status container
-                sh 'docker-compose ps'
+                echo 'Running smoke tests and Prometheus scrape checks...'
+                sh '''
+                  # Wait for backend /metrics to be available
+                  for i in $(seq 1 12); do
+                    status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/metrics || echo 000)
+                    if [ "$status" -eq 200 ]; then
+                      echo "Backend /metrics OK"
+                      break
+                    fi
+                    echo "Waiting for /metrics ($i)..."
+                    sleep 5
+                  done
+
+                  if [ "$status" -ne 200 ]; then
+                    echo "ERROR: backend /metrics not reachable"; exit 1
+                  fi
+
+                  # Wait for Prometheus to scrape the metric
+                  for i in $(seq 1 12); do
+                    res=$(curl -s "http://localhost:9090/api/v1/query?query=http_requests_total" | grep -c '"http_requests_total"' || true)
+                    if [ "$res" -gt 0 ]; then
+                      echo "Prometheus scraping OK"
+                      exit 0
+                    fi
+                    echo "Waiting for Prometheus scrape ($i)..."
+                    sleep 5
+                  done
+
+                  echo "ERROR: Prometheus did not scrape backend metrics"; exit 1
+                '''
             }
         }
     }
